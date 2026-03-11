@@ -1,5 +1,4 @@
 import { Text, type TextProps } from 'react-native';
-import { cn } from '@/app/lib/utils'; // Adjust path as needed
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 
@@ -10,7 +9,7 @@ export type ThemedTextProps = TextProps & {
 };
 
 export function ThemedText({
-  className, // Use className for Tailwind
+  style,
   lightColor,
   darkColor,
   type = 'default',
@@ -20,15 +19,15 @@ export function ThemedText({
 
   return (
     <Text
-      className={cn(
-        `text-[${color}]`, // Apply color dynamically
-        type === 'default' && 'text-base leading-6',
-        type === 'title' && 'text-3xl font-bold leading-8',
-        type === 'defaultSemiBold' && 'text-base leading-6 font-semibold',
-        type === 'subtitle' && 'text-xl font-bold',
-        type === 'link' && 'text-base leading-[30px] text-[#0a7ea4]',
-        className // Merge with any additional classes
-      )}
+      style={[
+        { color },
+        type === 'default' && { fontSize: 16, lineHeight: 24 },
+        type === 'title' && { fontSize: 32, fontWeight: 'bold', lineHeight: 32 },
+        type === 'defaultSemiBold' && { fontSize: 16, fontWeight: '600', lineHeight: 24 },
+        type === 'subtitle' && { fontSize: 20, fontWeight: 'bold' },
+        type === 'link' && { lineHeight: 30, fontSize: 16, color: '#0a7ea4' },
+        style,
+      ]}
       {...rest}
     />
   );
