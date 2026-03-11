@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { FormField } from '@/src/components/ui/form-field';
-import { Button } from '@/src/components/ui/button';
+import { FormField } from '@/app/components/ui/form-field';
+import { Button } from '@/app/components/ui/button';
 import { ThemedText } from '@/components/themed-text';
 import { Link } from 'expo-router';
 

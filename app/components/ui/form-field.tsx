@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Label } from './label';
 import { Input } from './input';
 import { ThemedText } from '@/components/themed-text';
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/app/lib/utils';
 
 interface FormFieldProps {
   label: string;

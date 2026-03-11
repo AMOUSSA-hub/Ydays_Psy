@@ -1,5 +1,5 @@
 import { Text, type TextProps } from 'react-native';
-import { cn } from '@/src/lib/utils'; // Adjust path as needed
+import { cn } from '@/app/lib/utils'; // Adjust path as needed
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 

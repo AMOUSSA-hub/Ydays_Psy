@@ -10,7 +10,7 @@ import Animated, {
 import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { cn } from '@/src/lib/utils'; // Import cn utility
+import { cn } from '@/app/lib/utils'; // Import cn utility
 
 const HEADER_HEIGHT = 250;
 

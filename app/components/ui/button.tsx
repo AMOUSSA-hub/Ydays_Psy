@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import { cn } from '@/src/lib/utils';
+import { cn } from '@/app/lib/utils';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 interface ButtonProps {

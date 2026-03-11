@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemedText } from '@/components/themed-text';
-import { LoginForm } from '@/src/components/auth/LoginForm';
+import { LoginForm } from '@/app/components/auth/LoginForm';
 import { ThemedView } from '@/components/themed-view';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
