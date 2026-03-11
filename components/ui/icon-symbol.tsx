@@ -49,5 +49,5 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} className={cn(className)} style={style} />;
+  return <MaterialIcons color={color} size={size} name={MAPPING[name]} className={className} style={style} />;
 }
