@@ -4,6 +4,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
+import { cn } from '@/src/lib/utils'; // Import cn utility
 
 type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
 type IconSymbolName = keyof typeof MAPPING;
@@ -18,6 +19,7 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'person.fill': 'person', // Added mapping for profile icon
 } as IconMapping;
 
 /**
@@ -29,13 +31,16 @@ export function IconSymbol({
   name,
   size = 24,
   color,
+  className, // Use className for Tailwind
   style,
+  weight, // Keep weight for iOS specific component
 }: {
   name: IconSymbolName;
   size?: number;
   color: string | OpaqueColorValue;
+  className?: string; // Add className prop
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  return <MaterialIcons color={color} size={size} name={MAPPING[name]} className={cn(className)} style={style} />;
 }

@@ -16,6 +16,11 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    // Custom colors for auth pages and UI elements
+    primary: '#4CAF50', // Example primary color
+    secondary: '#FFC107', // Example secondary color
+    backgroundAuth: '#F0F2F5', // Light background for auth screens
+    inputBorder: '#D1D5DB', // Light border for inputs
   },
   dark: {
     text: '#ECEDEE',
@@ -24,6 +29,11 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    // Custom colors for auth pages and UI elements
+    primary: '#66BB6A', // Example primary color for dark mode
+    secondary: '#FFD54F', // Example secondary color for dark mode
+    backgroundAuth: '#1E293B', // Dark background for auth screens
+    inputBorder: '#4B5563', // Dark border for inputs
   },
 };
 
