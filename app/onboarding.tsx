@@ -1,28 +1,49 @@
 import React from 'react';
-import { View } from 'react-native';
-import { ThemedView } from '@/components/themed-view';
+import { View, Dimensions } from 'react-native';
 import { Button } from '@/app/components/ui/button';
 import { router } from 'expo-router';
-import { useThemeColor } from '@/hooks/use-theme-color';
+
+const { width } = Dimensions.get('window');
 
 export default function OnboardingScreen() {
-  const lightBluePurple = '#A0B0FF'; // Custom color from image
-  const backgroundColor = useThemeColor({}, 'background');
-
   return (
-    <ThemedView className="flex-1 relative">
-      {/* Top empty space */}
-      <View className="flex-1 bg-white" />
+    <View className="flex-1 bg-white">
+      {/* Top curved purple/blue gradient area */}
+      <View className="relative" style={{ height: '55%' }}>
+        <View
+          className="absolute bg-periwinkle-light"
+          style={{
+            width: width * 2.5,
+            height: width * 2.5,
+            borderRadius: width * 1.25,
+            bottom: 0,
+            left: -(width * 0.75),
+          }}
+        />
+        {/* Overlay arc for depth */}
+        <View
+          className="absolute bg-periwinkle"
+          style={{
+            width: width * 2,
+            height: width * 2,
+            borderRadius: width,
+            bottom: -width * 0.3,
+            left: -(width / 2),
+            opacity: 0.5,
+          }}
+        />
+      </View>
 
-      {/* Bottom curved section */}
-      <View
-        className="absolute bottom-0 left-0 right-0 h-1/2 rounded-t-[999px] overflow-hidden items-center justify-center"
-        style={{ backgroundColor: lightBluePurple }}
-      >
-        <Button onPress={() => router.replace('/(tabs)/home')} variant="white" className="w-48">
+      {/* Bottom section with button */}
+      <View className="flex-1 items-center justify-center px-10">
+        <Button
+          onPress={() => router.replace('/(tabs)/home')}
+          variant="white"
+          className="w-56 py-4 border border-lavender-400"
+        >
           Commencer
         </Button>
       </View>
-    </ThemedView>
+    </View>
   );
 }

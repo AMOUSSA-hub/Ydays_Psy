@@ -1,53 +1,73 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Button } from '@/app/components/ui/button';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { router } from 'expo-router';
-import { useThemeColor } from '@/hooks/use-theme-color';
+
+const { width } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
-  const lightPurple = '#E0E0FF'; // Custom color from image
-  const darkPurpleBlue = '#A0B0FF'; // Custom color from image
-  const backgroundColor = useThemeColor({}, 'background');
-
   return (
-    <ThemedView className="flex-1 relative">
-      {/* Top curved section */}
-      <View
-        className="absolute top-0 left-0 right-0 h-1/2 rounded-b-[999px] overflow-hidden"
-        style={{ backgroundColor: lightPurple }}
-      >
-        <ThemedText type="title" className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          Bienvenue !
-        </ThemedText>
+    <View className="flex-1 bg-lavender-200">
+      {/* Purple curved top section */}
+      <View className="relative items-center" style={{ height: '45%' }}>
+        {/* Background arc shape */}
+        <View
+          className="absolute bg-orchid"
+          style={{
+            width: width * 2,
+            height: width * 2,
+            borderRadius: width,
+            top: -(width * 2) + (width * 0.85),
+            left: -(width / 2),
+          }}
+        />
+        {/* Title text positioned on the arc */}
+        <View className="absolute bottom-16 items-center">
+          <ThemedText
+            className="text-white text-3xl font-bold"
+            lightColor="#FFFFFF"
+            darkColor="#FFFFFF"
+          >
+            Bienvenue !
+          </ThemedText>
+        </View>
       </View>
 
-      {/* Content below the curve */}
-      <View className="flex-1 justify-center items-center mt-[50%] p-6">
-        <View className="w-full max-w-xs space-y-4">
-          <Button onPress={() => router.push('/(auth)/login')} className="w-full">
+      {/* Buttons section */}
+      <View className="flex-1 items-center justify-center px-10">
+        <View className="w-full gap-4">
+          <Button
+            onPress={() => router.push('/(auth)/login')}
+            className="w-full py-4"
+            variant="primary"
+          >
             Se connecter
           </Button>
-          <Button onPress={() => router.push('/(auth)/register')} className="w-full">
+          <Button
+            onPress={() => router.push('/(auth)/register')}
+            className="w-full py-4"
+            variant="primary"
+          >
             S'inscrire
           </Button>
         </View>
 
+        {/* Arrow circle button */}
         <TouchableOpacity
           onPress={() => router.push('/onboarding')}
-          className="mt-8 w-16 h-16 rounded-full items-center justify-center"
-          style={{ backgroundColor: darkPurpleBlue }}
+          className="mt-8 w-14 h-14 rounded-full items-center justify-center bg-periwinkle"
+          activeOpacity={0.7}
         >
-          <IconSymbol name="arrow.right" size={32} color="white" />
+          <IconSymbol name="arrow.right" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
-      {/* Question mark at the bottom */}
-      <View className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <IconSymbol name="questionmark.circle.fill" size={24} color={useThemeColor({}, 'icon')} />
+      {/* Question mark at bottom */}
+      <View className="items-center pb-8">
+        <IconSymbol name="questionmark.circle.fill" size={22} color="#7E6BAD" />
       </View>
-    </ThemedView>
+    </View>
   );
 }

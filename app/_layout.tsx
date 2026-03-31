@@ -2,7 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-// import 'nativewind/tailwind.css'; // Import NativeWind's global styles - Removed to resolve module error
+import '../global.css';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 

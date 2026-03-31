@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native'; // Import View for custom tab bar styling
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -9,84 +8,84 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const tabBgColor = '#E0E0FF'; // Light purple for tab bar background
-  const tabBorderColor = '#B0B0FF'; // Border color for tab bar
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#6B5B95',
+        tabBarInactiveTintColor: '#9A8EC1',
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: tabBgColor,
+          backgroundColor: '#EDE9FE',
           borderTopWidth: 1,
-          borderTopColor: tabBorderColor,
-          height: 80, // Adjust height for rounded corners
+          borderTopColor: '#D0D0FF',
+          height: 80,
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          borderTopLeftRadius: 30, // Rounded corners
-          borderTopRightRadius: 30, // Rounded corners
-          overflow: 'hidden', // Ensure content respects border radius
-          paddingBottom: 10, // Add padding for content
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
+          overflow: 'hidden',
+          paddingBottom: 12,
+          elevation: 8,
+          shadowColor: '#6B5B95',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 12,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
         },
         tabBarItemStyle: {
-          paddingTop: 10, // Adjust padding for icons
+          paddingTop: 8,
         },
       }}>
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Accueil',
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
         name="book"
         options={{
-          title: 'Book',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="book.closed.fill" color={color} />,
+          title: 'Journal',
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="book.closed.fill" color={color} />,
         }}
       />
       <Tabs.Screen
         name="character"
         options={{
-          title: 'Character',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="figure.walk" color={color} />,
+          title: 'Avatar',
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="figure.walk" color={color} />,
         }}
       />
       <Tabs.Screen
         name="checklist"
         options={{
-          title: 'Checklist',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="checklist" color={color} />,
+          title: 'Agenda',
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="checklist" color={color} />,
         }}
       />
       <Tabs.Screen
         name="phone"
         options={{
-          title: 'Phone',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="phone.fill" color={color} />,
+          title: 'Appel',
+          tabBarIcon: ({ color }) => <IconSymbol size={26} name="phone.fill" color={color} />,
         }}
       />
-      {/* Keep existing tabs if they are still needed, or remove them */}
+      {/* Hidden tabs */}
       <Tabs.Screen
         name="index"
-        options={{
-          href: null, // Hide this tab from the tab bar
-        }}
+        options={{ href: null }}
       />
       <Tabs.Screen
         name="explore"
-        options={{
-          href: null, // Hide this tab from the tab bar
-        }}
+        options={{ href: null }}
       />
     </Tabs>
   );

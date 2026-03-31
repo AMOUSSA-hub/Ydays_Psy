@@ -1,60 +1,73 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useThemeColor } from '@/hooks/use-theme-color';
 
-// Custom Card component for the layout
-const Card = ({ children, className }: { children?: React.ReactNode; className?: string }) => {
-  const cardBg = useThemeColor({ light: '#F0F0F0', dark: '#2C2C2C' }, 'background'); // Light gray for cards
-  const borderColor = useThemeColor({ light: '#E0E0E0', dark: '#3A3A3A' }, 'background');
+// Reusable Card component
+function Card({ className, style, children }: {
+  className?: string;
+  style?: object;
+  children?: React.ReactNode;
+}) {
   return (
-    <ThemedView
-      className={`rounded-xl p-4 border border-[${borderColor}] shadow-sm`}
-      style={{ backgroundColor: cardBg }}
+    <View
+      className={`bg-lavender-100 rounded-2xl border border-lavender-400 ${className || ''}`}
+      style={style}
     >
       {children}
-    </ThemedView>
+    </View>
   );
-};
+}
 
 export default function HomeScreen() {
-  const headerBg = '#E0E0FF'; // Light purple from image
-  const ochitsuPillBg = '#D0D0FF'; // Slightly different purple for the pill
-  const ochitsuPillBorder = '#B0B0FF'; // Border for the pill
-
   return (
-    <ThemedView className="flex-1">
+    <View className="flex-1 bg-lavender-200">
       {/* Header */}
-      <View className="flex-row items-center justify-between px-6 py-4 pt-12" style={{ backgroundColor: headerBg }}>
-        <IconSymbol name="gearshape.fill" size={28} color="black" />
-        <View className="flex-row items-center rounded-full px-4 py-2 border" style={{ backgroundColor: ochitsuPillBg, borderColor: ochitsuPillBorder }}>
-          <ThemedText className="text-lg font-semibold text-black">Ochitsu</ThemedText>
+      <View className="flex-row items-center justify-between px-5 pt-14 pb-4">
+        <IconSymbol name="gearshape.fill" size={26} color="#6B5B95" />
+        <View className="flex-row items-center rounded-full px-6 py-2 border border-lavender-700 bg-lavender-100">
+          <ThemedText
+            className="text-base font-semibold"
+            lightColor="#2D2347"
+            darkColor="#EDE9FE"
+          >
+            Ochitsu
+          </ThemedText>
         </View>
-        <IconSymbol name="person.fill" size={28} color="black" />
+        <IconSymbol name="person.fill" size={26} color="#6B5B95" />
       </View>
 
-      <ScrollView className="flex-1 p-4" contentContainerStyle={{ gap: 16 }}>
-        {/* Large rectangular card */}
-        <Card className="h-48" />
+      {/* Content */}
+      <ScrollView
+        className="flex-1 px-4"
+        contentContainerStyle={{ paddingBottom: 100, gap: 12 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Large hero card */}
+        <Card className="h-28" />
 
-        {/* Row of smaller pill-shaped cards */}
-        <View className="flex-row flex-wrap justify-between gap-2">
+        {/* Row of 6 small rounded pill cards */}
+        <View className="flex-row flex-wrap gap-2 justify-between">
           {[...Array(6)].map((_, i) => (
-            <Card key={i} className="w-[calc(33%-8px)] h-20 rounded-full" />
+            <Card
+              key={i}
+              className="rounded-xl"
+              style={{ width: '15%', aspectRatio: 1 }}
+            />
           ))}
         </View>
 
-        {/* Two larger cards below */}
-        <View className="flex-row justify-between gap-4">
-          <Card className="flex-1 h-64" />
-          <View className="flex-1 gap-4">
-            <Card className="h-32" />
-            <Card className="h-32" />
+        {/* Two large cards side by side */}
+        <View className="flex-row gap-3">
+          {/* Left tall card */}
+          <Card className="flex-1 h-56" />
+          {/* Right column — 2 stacked cards */}
+          <View className="flex-1 gap-3">
+            <Card className="flex-1" />
+            <Card className="flex-1" />
           </View>
         </View>
       </ScrollView>
-    </ThemedView>
+    </View>
   );
 }

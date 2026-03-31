@@ -28,15 +28,15 @@ export function Button({
   const getVariantClasses = () => {
     switch (variant) {
       case 'primary':
-        return `bg-[${primaryBg}] active:opacity-80`;
-      case 'secondary': // Using a slightly different blue for secondary if needed
-        return `bg-[#5A7EDD] active:opacity-80`;
+        return 'bg-orchid active:opacity-80';
+      case 'secondary':
+        return 'bg-orchid-dark active:opacity-80';
       case 'ghost':
         return 'bg-transparent active:opacity-80';
       case 'white':
         return 'bg-white active:opacity-80';
       default:
-        return `bg-[${primaryBg}] active:opacity-80`;
+        return 'bg-orchid active:opacity-80';
     }
   };
 
