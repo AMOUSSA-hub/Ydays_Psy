@@ -1,21 +1,15 @@
+import { useResolvedColorScheme } from '@/contexts/theme-preference-context';
 import { useEffect, useState } from 'react';
-import { useColorScheme as useRNColorScheme } from 'react-native';
 
 /**
- * To support static rendering, this value needs to be re-calculated on the client side for web
+ * Évite le mismatch SSR/hydratation sur web : premier rendu light, puis schème résolu.
  */
 export function useColorScheme() {
-  const [hasHydrated, setHasHydrated] = useState(false);
-
+  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
-    setHasHydrated(true);
+    setHydrated(true);
   }, []);
-
-  const colorScheme = useRNColorScheme();
-
-  if (hasHydrated) {
-    return colorScheme;
-  }
-
-  return 'light';
+  const scheme = useResolvedColorScheme();
+  if (!hydrated) return 'light';
+  return scheme;
 }

@@ -1,5 +1,5 @@
 import { View, type ViewProps } from 'react-native';
-import { cn } from '@/app/lib/utils'; // Import cn utility
+import { cn } from '@/lib/utils'; // Import cn utility
 
 import { useThemeColor } from '@/hooks/use-theme-color';
 

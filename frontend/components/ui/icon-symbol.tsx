@@ -4,7 +4,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
-import { cn } from '@/app/lib/utils'; // Import cn utility
 
 type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
 type IconSymbolName = keyof typeof MAPPING;
@@ -36,6 +35,9 @@ const MAPPING = {
   'strikethrough': 'strikethrough-s',
   'textformat.size': 'format-size',
   'paintbrush.fill': 'brush',
+  'calendar': 'calendar-today',
+  'book.fill': 'book',
+  'heart.fill': 'favorite',
 } as IconMapping;
 
 /**

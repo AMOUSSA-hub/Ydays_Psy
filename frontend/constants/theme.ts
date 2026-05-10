@@ -11,7 +11,8 @@ const tintColorDark = '#fff';
 export const Colors = {
   light: {
     text: '#11181C',
-    background: '#fff',
+    /** Fond aligné sur la palette lavender Figma */
+    background: '#E0E0FF',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
@@ -19,7 +20,8 @@ export const Colors = {
   },
   dark: {
     text: '#ECEDEE',
-    background: '#151718',
+    /** Mode nuit — lavande profonde (aligné Figma, pas de noir pur) */
+    background: '#4a4370',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',

@@ -1,50 +1,75 @@
-# Welcome to your Expo app 👋
+# Ydays Psy - Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Application React Native (Expo) avec support **mobile** et **web** (barre d’onglets en bas sur mobile, barre latérale à gauche sur web).
 
-## Get started
+## Prérequis
 
-1. Install dependencies
+- Node.js 20 LTS recommandé
+- npm 10+
+- Expo Go sur mobile (optionnel)
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Installation
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Copier la configuration (optionnel si vous utilisez Supabase) :
 
-## Learn more
+```bash
+copy .env.example .env
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Renseigner `EXPO_PUBLIC_SUPABASE_URL` et `EXPO_PUBLIC_SUPABASE_ANON_KEY` depuis le tableau de bord Supabase.  
+Sans ces variables, l’app fonctionne en **mode local** (données AsyncStorage sur l’appareil).
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Dans Supabase : **Authentication → Providers → Anonymous** doit être activé pour le mode invité cloud ; sinon utilisez uniquement le mode local ou email/mot de passe.
 
-## Join the community
+Le schéma SQL de référence est dans `../supabase/migrations/001_initial.sql` (à exécuter dans l’éditeur SQL Supabase).
 
-Join our community of developers creating universal apps.
+## Lancement
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Développement
+
+```bash
+npm run start
+```
+
+### Web
+
+```bash
+npm run web
+```
+
+### Android / iOS
+
+```bash
+npm run android
+npm run ios
+```
+
+## Parcours démo (soutenance)
+
+1. Écran **Bienvenue** → connexion, inscription, **mode anonyme**, ou flux « Commencer ».
+2. **Accueil** : citation, semaine + humeurs, raccourcis Journal / Quizz / compagnon / activités.
+3. **Agenda** : humeur du jour (1–5), rappels rapides, liste des rappels (notifications locales sur mobile).
+4. **Journal** : création / édition d’entrées (stockage local ou Supabase).
+5. **Quizz** : questionnaire PHQ-9 simplifié avec retour indicatif.
+6. **Activités** : respiration / méditation / conseils avec minuteur.
+7. **Appel** : lignes d’écoute (3114, TCA, etc.).
+8. **Réglages** : **jour / nuit / automatique**, confidentialité, déconnexion.
+
+## Structure utile
+
+- `app/` : routes Expo Router
+- `app/(tabs)/` : onglets principaux
+- `lib/repositories.ts` : accès données (Supabase ou magasin local)
+- `lib/supabase.ts` : client Supabase
+- `contexts/` : auth, préférences de thème
+- `supabase/migrations/` : SQL à appliquer côté projet Supabase
+
+## Notes techniques
+
+- Style : **NativeWind** (Tailwind).
+- Thème : **React Navigation** + préférences persistées (`ThemePreferenceProvider`).
+- Notifications : **expo-notifications** (rappels ; sur web, liste dans l’agenda uniquement).
