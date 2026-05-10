@@ -8,7 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "deploy": "npx expo export -p web && npx gh-pages -d dist --dotfiles"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

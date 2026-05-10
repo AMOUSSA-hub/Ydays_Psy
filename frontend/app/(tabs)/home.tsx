@@ -144,7 +144,7 @@ export default function HomeScreen() {
           </View>
 
           {/* Calendar Strip - Spread Out */}
-          <View className="flex-row justify-between w-full">
+          <View className="flex-row justify-between w-full my-4">
             {weekStrip.map((d) => (
               <View 
                 key={d.key} 
