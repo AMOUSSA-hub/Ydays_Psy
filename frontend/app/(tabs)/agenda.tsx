@@ -257,9 +257,9 @@ export default function AgendaScreen() {
               </View>
               <Text style={{ fontSize: 38, fontWeight: '900', color: '#000' }}>:</Text>
               <View style={{ alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => setMinute(m => (m + 5) % 60)}><Text style={{ fontWeight: '900', fontSize: 18 }}>▲</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => setMinute(m => (m + 1) % 60)}><Text style={{ fontWeight: '900', fontSize: 18 }}>▲</Text></TouchableOpacity>
                 <Text style={{ fontSize: 38, fontWeight: '900', color: '#000' }}>{minute.toString().padStart(2, '0')}</Text>
-                <TouchableOpacity onPress={() => setMinute(m => (m - 5 + 60) % 60)}><Text style={{ fontWeight: '900', fontSize: 18 }}>▼</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => setMinute(m => (m - 1 + 60) % 60)}><Text style={{ fontWeight: '900', fontSize: 18 }}>▼</Text></TouchableOpacity>
               </View>
             </View>
 

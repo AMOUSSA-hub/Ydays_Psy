@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Platform, View, StatusBar, Image, TouchableOpacity } from 'react-native';
+import { Platform, View, StatusBar, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { WebContainer } from '@/components/ui/web-container';
 import { router, useFocusEffect } from 'expo-router';
@@ -60,54 +60,53 @@ export default function CharacterScreen() {
   return (
     <View className="flex-1" style={{ backgroundColor: mainBg, paddingLeft: isWeb ? 100 : 0, paddingTop: isWeb ? 20 : insets.top }}>
       <StatusBar barStyle="light-content" />
-      <WebContainer maxWidth={800} className="flex-1 px-6 pb-10">
-        {/* Header - Aligned with Home & Quiz */}
-        <View className="mb-12">
-          {/* Back Button styled like Home Pills */}
-          <TouchableOpacity 
-            onPress={() => router.replace('/home')}
-            activeOpacity={0.7}
-            className="mb-8 self-start px-8 py-3 rounded-full shadow-sm"
-            style={{ backgroundColor: cardBg }}
-          >
-            <ThemedText className="text-black font-black text-sm tracking-tight">← RETOUR</ThemedText>
-          </TouchableOpacity>
+      <WebContainer maxWidth={800} className="flex-1">
+        <ScrollView 
+          style={{ flex: 1 }} 
+          contentContainerStyle={{ 
+            flexGrow: 1, 
+            paddingHorizontal: 24,
+            paddingTop: isWeb ? 20 : 0,
+            paddingBottom: isWeb ? 40 : 140 + insets.bottom 
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header - Aligned with Home & Quiz */}
+          <View className="mb-12 mt-4">
 
-          <View className="items-center">
-            <View className="rounded-full px-12 py-3 shadow-sm" style={{ backgroundColor: cardBg }}>
-              <ThemedText className="text-xl font-black text-black tracking-tight uppercase">Compagnon</ThemedText>
+            <View className="items-center">
+              <View className="rounded-full px-12 py-3 shadow-sm" style={{ backgroundColor: cardBg }}>
+                <ThemedText className="text-xl font-black text-black tracking-tight uppercase">Ochitsu Bot</ThemedText>
+              </View>
             </View>
-            <ThemedText className="text-center text-white/90 max-w-sm mt-6 text-lg leading-7 font-medium">
-              Votre allié quotidien pour votre bien-être émotionnel.
-            </ThemedText>
           </View>
-        </View>
 
-        <View className="flex-1 items-center justify-center w-full">
-          <View className="rounded-[45px] p-10 items-center shadow-2xl w-full max-w-sm border border-neutral-100" style={{ backgroundColor: cardBg }}>
-            <View className="mb-10 h-64 w-64 items-center justify-center rounded-[40px] bg-white shadow-inner overflow-hidden p-6 border border-neutral-100">
-              <Image 
-                source={require('@/assets/images/figma/monster.png')} 
-                resizeMode="contain"
-                style={{ width: '100%', height: '100%' }}
-              />
-            </View>
-            
-            <ThemedText className="mb-6 text-center text-2xl font-black text-black tracking-tight">
-              Ochitsu Bot
-            </ThemedText>
-            
-            <ThemedText className="mb-10 text-center text-lg leading-8 text-neutral-700 font-medium italic">
-              "{message}"
-            </ThemedText>
-            
-            <View className="rounded-[25px] bg-white border border-neutral-100 px-10 py-5 shadow-sm">
-              <ThemedText className="text-center text-sm font-black text-black uppercase tracking-widest">
-                Séances : {sessions}
+          <View className="flex-1 items-center justify-center w-full">
+            <View className="rounded-[45px] p-5 items-center shadow-2xl w-full max-w-sm border border-neutral-100" style={{ backgroundColor: cardBg }}>
+              <View className="mb-10 h-64 w-64 items-center justify-center rounded-[40px] bg-white shadow-inner overflow-hidden p-6 border border-neutral-100">
+                <Image 
+                  source={require('@/assets/images/figma/monster.png')} 
+                  resizeMode="contain"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </View>
+              
+              <ThemedText className="mb-3 text-center text-2xl font-black text-black tracking-tight">
+                Ochitsu Bot
               </ThemedText>
+              
+              <ThemedText className="mb-5 text-center text-lg leading-8 text-neutral-700 font-medium italic">
+                "{message}"
+              </ThemedText>
+              
+              <View className="rounded-[25px] bg-white border border-neutral-100 px-10 py-2 shadow-sm">
+                <ThemedText className="text-center text-sm font-black text-black uppercase tracking-widest">
+                  Séances : {sessions}
+                </ThemedText>
+              </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </WebContainer>
     </View>
   );

@@ -124,11 +124,12 @@ export default function HomeScreen() {
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
+          flexGrow: 1,
           paddingBottom: isWeb ? 48 : 120 + insets.bottom,
         }}
         showsVerticalScrollIndicator={false}
       >
-        <WebContainer maxWidth={displayWidth} className="space-y-6 px-6">
+        <WebContainer maxWidth={displayWidth} className="flex-1 space-y-6 px-6">
           
           {/* Quote Card */}
           <View className="rounded-[40px] bg-[#F2F2F7] p-8 shadow-sm border border-neutral-100">
@@ -161,7 +162,7 @@ export default function HomeScreen() {
           </View>
 
           {/* Main Content Area */}
-          <View className={cn("flex-row gap-6", isWeb ? "h-[300px]" : "h-[220px]")}>
+          <View className={cn("flex-1 flex-row gap-6", isWeb ? "min-h-[300px]" : "min-h-[220px]")}>
             {/* Companion Card */}
             <TouchableOpacity
               onPress={() => router.push('/character')}

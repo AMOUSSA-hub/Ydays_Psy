@@ -31,34 +31,9 @@ function RootNavigation() {
         
         {user && (
           <>
-            {/* Persistent Settings Button - Top Left like Figma */}
+            {/* Persistent Settings Button - Top Right */}
             <TouchableOpacity
               onPress={() => router.push('/settings')}
-              activeOpacity={0.7}
-              style={{
-                position: 'absolute',
-                top: Platform.OS === 'web' ? 24 : insets.top + 16,
-                left: Platform.OS === 'web' ? 120 : 20,
-                zIndex: 9999,
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: '#FFFFFF',
-                alignItems: 'center',
-                justifyContent: 'center',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                elevation: 3,
-              }}
-            >
-              <IconSymbol name="gearshape.fill" size={24} color="#000" />
-            </TouchableOpacity>
-
-            {/* Persistent Profile Button - Top Right like Figma */}
-            <TouchableOpacity
-              onPress={() => {}} 
               activeOpacity={0.7}
               style={{
                 position: 'absolute',
@@ -78,7 +53,7 @@ function RootNavigation() {
                 elevation: 3,
               }}
             >
-              <IconSymbol name="person.fill" size={24} color="#000" />
+              <IconSymbol name="gearshape.fill" size={24} color="#000" />
             </TouchableOpacity>
           </>
         )}

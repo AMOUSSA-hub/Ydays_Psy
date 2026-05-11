@@ -24,6 +24,7 @@ function TabIcon({ name, color, size, routeName }: { name: string, color: string
     'book': 'book.closed.fill',
     'agenda': 'checklist',
     'phone': 'phone.fill',
+    'profile': 'person.fill',
   };
 
   return <IconSymbol size={size} name={iconMap[routeName] || name} color={color} />;
@@ -42,7 +43,7 @@ function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       <View style={styles.mobileInner}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
-          const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone'];
+          const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone', 'profile'];
           if (!allowedRoutes.includes(route.name)) return null;
           if ((options as any).href === null) return null;
 
@@ -72,7 +73,7 @@ function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 routeName={route.name}
                 name=""
                 color={isFocused ? '#000' : '#666'} 
-                size={28} 
+                size={24} 
               />
             </TouchableOpacity>
           );
@@ -89,7 +90,7 @@ function WebSidebar({ state, descriptors, navigation }: BottomTabBarProps) {
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           
-          const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone'];
+          const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone', 'profile'];
           if (!allowedRoutes.includes(route.name)) return null;
           if ((options as any).href === null) return null;
 
@@ -130,20 +131,20 @@ const styles = StyleSheet.create({
   },
   mobileInner: {
     flexDirection: 'row',
-    backgroundColor: '#F2F2F7CC',
+    backgroundColor: '#F2F2F7E6', // More opaque for better readability
     borderRadius: 50,
-    padding: 10,
-    gap: 12,
+    padding: 8,
+    gap: 8, // Reduced gap from 12
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
-    elevation: 5,
+    elevation: 8,
   },
   tabButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 48, // Reduced from 60
+    height: 48, // Reduced from 60
+    borderRadius: 24,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -220,6 +221,7 @@ export default function TabLayout() {
         <Tabs.Screen name="character" />
         <Tabs.Screen name="agenda" />
         <Tabs.Screen name="phone" />
+        <Tabs.Screen name="profile" />
         <Tabs.Screen name="journal-entry" options={{ href: null }} />
         <Tabs.Screen name="quiz/index" options={{ href: null }} />
         <Tabs.Screen name="quiz/[slug]" options={{ href: null }} />

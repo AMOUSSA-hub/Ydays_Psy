@@ -35,8 +35,8 @@ export default function BookScreen() {
   const [entries, setEntries] = useState<JournalEntryRow[]>([]);
   const [query, setQuery] = useState('');
   
-  // Theme colors - based on Figma screenshots (mostly white/black with lavender accents)
-  const mainBg = isDark ? '#6B6588' : '#FFFFFF';
+  // Theme colors
+  const mainBg = isDark ? '#6B6588' : '#9896D4';
 
   const load = useCallback(async () => {
     if (!user) return;

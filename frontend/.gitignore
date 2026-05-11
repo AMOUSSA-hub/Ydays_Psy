@@ -10,3 +10,5 @@ node_modules/
 # @end expo-cli
 dist/
 .expo/
+android/
+ios/

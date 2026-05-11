@@ -113,31 +113,42 @@ export default function JournalEntryScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <WebContainer maxWidth={800} className="flex-1 px-6">
-        {/* Header - Adjusted for the global settings button */}
+        {/* Header - Single Row Alignment */}
         <View 
-          className="flex-row items-center justify-between"
-          style={{ paddingTop: isWeb ? 20 : Math.max(insets.top, 20), marginBottom: 30 }}
+          style={{ 
+            marginTop: isWeb ? 24 : insets.top + 16, 
+            marginBottom: 30,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: 44, // Match settings button height
+          }}
         >
-          <View className="flex-row items-center">
-            {/* Shifted back button to avoid overlapping with global settings button */}
-            <View style={{ width: 60 }} /> 
-            <TouchableOpacity
-              onPress={() => router.replace('/book')}
-              className="h-12 w-12 items-center justify-center rounded-full bg-[#F2F2F7] shadow-sm"
-            >
-              <ThemedText className="text-black font-black text-xl">←</ThemedText>
-            </TouchableOpacity>
-          </View>
-          
-          <ThemedText className="text-xl font-black text-white">Journal</ThemedText>
+          <TouchableOpacity 
+            onPress={() => router.replace('/book')}
+            activeOpacity={0.7}
+            className="w-11 h-11 items-center justify-center rounded-full shadow-sm bg-[#F2F2F7]"
+          >
+            <IconSymbol name="chevron.left" size={24} color="#000" />
+          </TouchableOpacity>
 
-          {entryId ? (
-            <TouchableOpacity onPress={onDelete} className="h-12 w-12 items-center justify-center">
-              <IconSymbol name="trash.fill" size={20} color="#FF3B30" />
-            </TouchableOpacity>
-          ) : (
-            <View className="w-12" />
-          )}
+          <View className="flex-1 items-center">
+            <View className="rounded-full border border-black/10 px-16 py-2 bg-white shadow-sm">
+              <ThemedText className="text-2xl font-black text-black">Journal</ThemedText>
+            </View>
+          </View>
+
+          {/* Right Placeholder to balance the persistent settings button or show Trash */}
+          <View className="w-11 items-center justify-center">
+            {entryId && (
+              <TouchableOpacity 
+                onPress={onDelete} 
+                className="h-11 w-11 items-center justify-center rounded-full bg-white/20"
+              >
+                <IconSymbol name="trash.fill" size={20} color="#FF3B30" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {loading ? (
@@ -190,7 +201,7 @@ export default function JournalEntryScreen() {
                 className="text-xl font-black text-black mb-4"
                 placeholderTextColor="rgba(0,0,0,0.2)"
               />
-              <View className="h-[1px] bg-black/5 mb-4" />
+              <View className="h-[1px] bg-black/5" />
               <TextInput
                 multiline
                 placeholder="Racontez votre journée..."
