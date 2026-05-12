@@ -8,6 +8,7 @@ import type { QuestionnaireRow } from '@/types/database';
 import { cn } from '@/lib/utils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function QuizListScreen() {
   const insets = useSafeAreaInsets();
@@ -51,33 +52,41 @@ export default function QuizListScreen() {
   return (
     <View 
       className="flex-1" 
-      style={{ 
-        backgroundColor: mainBg, 
-        paddingLeft: isWeb ? 100 : 0, 
-        paddingTop: isWeb ? 20 : insets.top 
-      }}
+      style={{ backgroundColor: mainBg }}
     >
       <WebContainer maxWidth={800} className="flex-1 px-6 pb-10">
         {/* Header - Aligned with Home */}
-        <View className="mb-12">
-          {/* Back Button styled like Home Pills */}
+        <View 
+          style={{ 
+            marginTop: isWeb ? 24 : insets.top + 16, 
+            marginBottom: 30,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: 44,
+          }}
+        >
           <TouchableOpacity 
             onPress={() => router.replace('/home')}
             activeOpacity={0.7}
-            className="mb-8 self-start px-8 py-3 rounded-full shadow-sm"
-            style={{ backgroundColor: cardBg }}
+            className="w-11 h-11 items-center justify-center rounded-full shadow-sm bg-[#F2F2F7]"
           >
-            <ThemedText className="text-black font-black text-sm tracking-tight">← RETOUR</ThemedText>
+            <IconSymbol name="chevron.left" size={24} color="#000" />
           </TouchableOpacity>
 
-          <View className="items-center">
+          <View className="flex-1 items-center">
             <View className="rounded-full px-12 py-3 shadow-sm" style={{ backgroundColor: cardBg }}>
               <ThemedText className="text-xl font-black text-black tracking-tight uppercase">Bilans & Quizz</ThemedText>
             </View>
-            <ThemedText className="text-center text-white/90 max-w-sm mt-6 text-lg leading-7 font-medium">
-              Prenez quelques instants pour évaluer votre bien-être actuel.
-            </ThemedText>
           </View>
+
+          <View className="w-11" />
+        </View>
+
+        <View className="items-center mb-10">
+          <ThemedText className="text-center text-white/90 max-w-sm text-lg leading-7 font-medium">
+            Prenez quelques instants pour évaluer votre bien-être actuel.
+          </ThemedText>
         </View>
 
         <FlatList

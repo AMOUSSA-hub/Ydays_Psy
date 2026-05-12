@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Alert, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, ScrollView, TouchableOpacity, View } from 'react-native';
 import { router, useRouter } from 'expo-router';
 import { cn } from '@/lib/utils';
 import { ThemedText } from '@/components/themed-text';
@@ -8,6 +8,7 @@ import { WebContainer } from '@/components/ui/web-container';
 import { useAuth } from '@/contexts/auth-context';
 import { useThemePreference, type ThemePreference } from '@/contexts/theme-preference-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const options = {
   title: 'Réglages',
@@ -27,6 +28,7 @@ export default function SettingsScreen() {
   const nav = useRouter();
   const { signOut, user } = useAuth();
   const { preference, setPreference } = useThemePreference();
+  const insets = useSafeAreaInsets();
   const mainBg = isDark ? '#6B6588' : '#9896D4';
 
   const goBack = useCallback(() => {
@@ -59,26 +61,37 @@ export default function SettingsScreen() {
   }, [isWeb, signOut]);
 
   return (
-    <View className="flex-1" style={{ backgroundColor: mainBg, paddingLeft: isWeb ? 100 : 0 }}>
+    <View className="flex-1" style={{ backgroundColor: mainBg }}>
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
-          paddingTop: isWeb ? 40 : 20,
-          paddingBottom: 120,
+          paddingBottom: 20,
           paddingHorizontal: isWeb ? 0 : 20,
         }}
         showsVerticalScrollIndicator={false}
       >
         <WebContainer maxWidth={600}>
           {/* Header */}
-          <View className="mb-10 flex-row items-center justify-between">
-            <TouchableOpacity onPress={goBack} className="h-12 w-12 items-center justify-center rounded-full bg-[#F2F2F7] shadow-sm">
-              <ThemedText className="text-black font-black text-xl">←</ThemedText>
+          <View 
+            style={{ 
+              marginTop: isWeb ? 24 : insets.top + 16, 
+              marginBottom: 30,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              height: 44,
+            }}
+          >
+            <TouchableOpacity 
+              onPress={goBack} 
+              className="h-11 w-11 items-center justify-center rounded-full bg-[#F2F2F7] shadow-sm"
+            >
+              <IconSymbol name="chevron.left" size={24} color="#000" />
             </TouchableOpacity>
             <View className="bg-[#F2F2F7] px-8 py-2 rounded-full shadow-sm">
               <ThemedText className="text-2xl font-black text-black">Réglages</ThemedText>
             </View>
-            <View className="w-12" />
+            <View className="w-11" />
           </View>
 
           {/* Profile Card */}

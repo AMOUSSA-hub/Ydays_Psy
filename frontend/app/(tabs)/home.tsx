@@ -111,21 +111,32 @@ export default function HomeScreen() {
   if (!user) return null;
 
   return (
-    <View className="flex-1" style={{ backgroundColor: mainBg, paddingLeft: isWeb ? 100 : 0 }}>
+    <View className="flex-1" style={{ backgroundColor: mainBg }}>
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
-      <View className={cn("flex-row items-center justify-center px-6", isWeb ? "py-6" : "pt-12 pb-4")}>
+      <View 
+        style={{ 
+          marginTop: isWeb ? 24 : insets.top + 16, 
+          marginBottom: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 24,
+          height: 44,
+        }}
+      >
+        <View className="w-11" />
         <View className="rounded-full bg-[#F2F2F7] px-10 py-2 shadow-sm">
           <Text className="text-xl font-black tracking-tight text-black">Ochitsu</Text>
         </View>
+        <View className="w-11" />
       </View>
 
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
           flexGrow: 1,
-          paddingBottom: isWeb ? 48 : 120 + insets.bottom,
         }}
         showsVerticalScrollIndicator={false}
       >

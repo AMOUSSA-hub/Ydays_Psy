@@ -2,33 +2,48 @@ import React from 'react';
 import { ScrollView, View, TouchableOpacity, StatusBar, Platform } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { router } from 'expo-router';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { cn } from '@/lib/utils';
 import { WebContainer } from '@/components/ui/web-container';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PrivacyScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const isWeb = Platform.OS === 'web';
+  const insets = useSafeAreaInsets();
 
   const bgColor = isDark ? '#4a4370' : '#F2F2F7';
   const cardBg = isDark ? '#5C5C62' : '#FFFFFF';
 
   return (
-    <View className="flex-1" style={{ backgroundColor: bgColor, paddingLeft: isWeb ? 90 : 0 }}>
+    <View className="flex-1" style={{ backgroundColor: bgColor }}>
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
       
-      <View className={cn("px-6 pb-4", isWeb ? "pt-10" : "pt-14")}>
-        <TouchableOpacity onPress={() => router.back()} className="mb-4 self-start">
-          <ThemedText className="font-bold opacity-70" lightColor="#6B5B95" darkColor="#D1D1D6">
-            ← Retour
-          </ThemedText>
+      <View 
+        style={{ 
+          marginTop: isWeb ? 24 : insets.top + 16, 
+          marginBottom: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 24,
+          height: 44,
+        }}
+      >
+        <TouchableOpacity 
+          onPress={() => router.back()} 
+          className="h-11 w-11 items-center justify-center rounded-full bg-[#F2F2F7]/20 shadow-sm"
+        >
+          <IconSymbol name="chevron.left" size={24} color={isDark ? "#D1D1D6" : "#6B5B95"} />
         </TouchableOpacity>
         <ThemedText type="title" lightColor="#4B3F72" darkColor="#FFFFFF">Confidentialité</ThemedText>
+        <View className="w-11" />
       </View>
 
       <ScrollView className="flex-1 px-6">
-        <WebContainer maxWidth={800} className="gap-6 pb-20">
+        <WebContainer maxWidth={800} className="gap-6">
           <View className="rounded-[28px] p-6 shadow-sm" style={{ backgroundColor: cardBg }}>
             <ThemedText className="mb-3 text-lg font-bold" lightColor="#4B3F72" darkColor="#FFFFFF">
               Notre Engagement

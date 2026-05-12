@@ -15,15 +15,27 @@ export default function ProfileScreen() {
   const mainBg = isDark ? '#6B6588' : '#9896D4';
 
   return (
-    <View style={{ flex: 1, backgroundColor: mainBg, paddingLeft: isWeb ? 100 : 0 }}>
+    <View style={{ flex: 1, backgroundColor: mainBg }}>
       {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24, paddingTop: isWeb ? 24 : 48, paddingBottom: 16 }}>
-        <View style={{ borderRadius: 999, backgroundColor: '#F2F2F7', paddingHorizontal: 40, paddingVertical: 8 }}>
+      <View 
+        style={{ 
+          marginTop: isWeb ? 24 : insets.top + 16, 
+          marginBottom: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 24,
+          height: 44,
+        }}
+      >
+        <View className="w-11" />
+        <View style={{ borderRadius: 999, backgroundColor: '#F2F2F7', paddingHorizontal: 40, paddingVertical: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 5, elevation: 2 }}>
           <Text style={{ fontSize: 20, fontWeight: '900', color: '#000' }}>Mon Profil</Text>
         </View>
+        <View className="w-11" />
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: isWeb ? 48 : 120 + insets.bottom }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
         <WebContainer maxWidth={800} className="px-6">
           <View style={{ borderRadius: 40, backgroundColor: '#F2F2F7', padding: 28, borderWidth: 1, borderColor: '#f0f0f0', alignItems: 'center' }}>
             <View style={{ width: 100, height: 100, borderRadius: 50, backgroundColor: '#E5E7EB', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>

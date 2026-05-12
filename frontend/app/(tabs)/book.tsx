@@ -61,16 +61,28 @@ export default function BookScreen() {
   return (
     <View
       className="flex-1"
-      style={{ backgroundColor: mainBg, paddingLeft: isWeb ? 100 : 0, paddingTop: isWeb ? 0 : insets.top || 14 }}
+      style={{ backgroundColor: mainBg }}
     >
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
       <WebContainer maxWidth={800} className="flex-1 px-5">
         
         {/* Figma Header: "Journal" in a capsule */}
-        <View className="mb-8 mt-4 items-center">
+        <View 
+          style={{ 
+            marginTop: isWeb ? 24 : insets.top + 16, 
+            marginBottom: 32,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: 24,
+            height: 44,
+          }}
+        >
+          <View className="w-11" />
           <View className="rounded-full border border-black/10 px-16 py-2 bg-white shadow-sm">
             <ThemedText className="text-2xl font-black text-black">Journal</ThemedText>
           </View>
+          <View className="w-11" />
         </View>
 
         {/* Figma Search Row: Search bar + (+) button */}
@@ -98,7 +110,7 @@ export default function BookScreen() {
         <FlatList
           data={filtered}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ gap: 24, paddingBottom: 160 }}
+          contentContainerStyle={{ gap: 24 }}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View className="items-center justify-center py-20">

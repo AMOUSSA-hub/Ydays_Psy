@@ -109,7 +109,7 @@ export default function JournalEntryScreen() {
   return (
     <KeyboardAvoidingView
       className="flex-1"
-      style={{ backgroundColor: mainBg, paddingLeft: isWeb ? 100 : 0 }}
+      style={{ backgroundColor: mainBg }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <WebContainer maxWidth={800} className="flex-1 px-6">
@@ -159,7 +159,7 @@ export default function JournalEntryScreen() {
           <ScrollView 
             className="flex-1" 
             showsVerticalScrollIndicator={false} 
-            contentContainerStyle={{ paddingBottom: 60 }}
+            contentContainerStyle={{ flexGrow: 1 }}
           >
             <View className="mb-6">
               <ThemedText className="text-sm font-black text-white/60 uppercase tracking-widest mb-4 text-center">

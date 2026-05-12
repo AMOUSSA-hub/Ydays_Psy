@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
 import { useAppBackgroundClass } from '@/hooks/use-app-background';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 function TabIcon({ name, color, size, routeName }: { name: string, color: string, size: number, routeName: string }) {
   if (routeName === 'character') {
@@ -40,7 +41,10 @@ function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         { paddingBottom: insets.bottom + 16 }
       ]}
     >
-      <View style={styles.mobileInner}>
+      <View style={[
+        styles.mobileInner,
+        { backgroundColor: '#FFFFFF' }
+      ]}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
           const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone', 'profile'];
@@ -85,7 +89,10 @@ function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
 function WebSidebar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <View style={styles.webSidebar}>
+    <View style={[
+      styles.webSidebar,
+      { backgroundColor: '#F2F2F7' }
+    ]}>
       <View style={styles.webSidebarInner}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -195,6 +202,7 @@ const styles = StyleSheet.create({
 
 export default function TabLayout() {
   const { user, initialized } = useAuth();
+  const colorScheme = useColorScheme();
   const screenBg = useAppBackgroundClass();
   const insets = useSafeAreaInsets();
 
@@ -208,12 +216,20 @@ export default function TabLayout() {
 
   if (!user) return <Redirect href="/" />;
 
+  const isDark = colorScheme === 'dark';
+  const navBg = isDark ? '#6B6588' : '#9896D4';
+
   return (
     <View className="flex-1">
       <Tabs
         tabBar={(props) => (Platform.OS === 'web' ? <WebSidebar {...props} /> : <MobileTabBar {...props} />)}
         screenOptions={{
           headerShown: false,
+          sceneStyle: {
+            paddingLeft: Platform.OS === 'web' ? 100 : 0,
+            paddingBottom: Platform.OS === 'ios' || Platform.OS === 'android' ? 100 + insets.bottom : 0,
+            backgroundColor: navBg, // Ensure default scene background matches
+          }
         }}
       >
         <Tabs.Screen name="home" />
