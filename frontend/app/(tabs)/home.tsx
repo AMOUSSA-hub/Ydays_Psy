@@ -47,6 +47,8 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const isWeb = Platform.OS === 'web';
+  const isDesktop = windowWidth >= 768;
+  const isSmall = windowWidth < 450;
   // Increase maxWidth for landscape web feel
   const displayWidth = isWeb ? Math.min(windowWidth - 140, 1000) : windowWidth;
 
@@ -165,9 +167,11 @@ export default function HomeScreen() {
                   d.isToday ? "bg-white" : "bg-white/60"
                 )}
               >
-                <Text className="text-[10px] font-bold text-black uppercase opacity-60">{d.month}</Text>
-                <Text className="text-2xl font-black text-black my-2">{d.day}</Text>
-                <Text className="text-[10px] font-medium text-black opacity-60">{d.weekday.slice(0, 5)}</Text>
+                <Text className={cn("font-bold text-black uppercase opacity-60", isSmall ? "text-[8px]" : "text-[10px]")}>{d.month}</Text>
+                <Text className={cn("font-black text-black my-2", isSmall ? "text-lg" : "text-2xl")}>{d.day}</Text>
+                <Text className={cn("font-medium text-black opacity-60", isSmall ? "text-[8px]" : "text-[10px]")}>
+                  {isSmall ? d.weekday.slice(0, 1) : d.weekday.slice(0, 3)}
+                </Text>
               </View>
             ))}
           </View>
@@ -193,11 +197,11 @@ export default function HomeScreen() {
             <View className="flex-1 gap-4">
               <TouchableOpacity onPress={() => router.push('/book')} activeOpacity={0.9} className="flex-1">
                 <View className="flex-1 items-center justify-center rounded-[36px] bg-[#F2F2F7] p-4 shadow-sm">
-                  <Text className="text-2xl font-black text-black mb-2">Journal</Text>
+                  {!isSmall && <Text className="text-2xl font-black text-black mb-2">Journal</Text>}
                   <Image 
                     source={require('@/assets/images/figma/notebook.png')} 
                     resizeMode="contain"
-                    style={{ width: 60, height: 60 }}
+                    style={{ width: isSmall ? 48 : 60, height: isSmall ? 48 : 60 }}
                   />
                 </View>
               </TouchableOpacity>
@@ -210,11 +214,11 @@ export default function HomeScreen() {
                   className="flex-1"
                 >
                   <View className="flex-1 items-center justify-center rounded-[30px] bg-[#F2F2F7] shadow-sm">
-                    <Text className="text-lg font-black text-black mb-2">Quizz</Text>
+                    {!isSmall && <Text className="text-lg font-black text-black mb-2">Quizz</Text>}
                     <Image 
                       source={require('@/assets/images/figma/question.png')} 
                       resizeMode="contain"
-                      style={{ width: 50, height: 50 }}
+                      style={{ width: isSmall ? 40 : 50, height: isSmall ? 40 : 50 }}
                     />
                   </View>
                 </TouchableOpacity>
@@ -225,8 +229,8 @@ export default function HomeScreen() {
                   className="flex-1"
                 >
                   <View className="flex-1 items-center justify-center rounded-[30px] bg-[#F2F2F7] shadow-sm">
-                    <Text className="text-lg font-black text-black mb-2">Exercice</Text>
-                    <IconSymbol name="heart.fill" size={28} color="#000" />
+                    {!isSmall && <Text className="text-lg font-black text-black mb-2">Exercice</Text>}
+                    <IconSymbol name="heart.fill" size={isSmall ? 22 : 28} color="#000" />
                   </View>
                 </TouchableOpacity>
               </View>

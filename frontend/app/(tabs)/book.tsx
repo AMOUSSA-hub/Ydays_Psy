@@ -88,6 +88,7 @@ export default function BookScreen() {
         {/* Figma Search Row: Search bar + (+) button */}
         <View className="mb-10 flex-row items-center gap-3">
           <View className="flex-1 flex-row items-center rounded-full border border-black/20 bg-white px-5 py-3">
+            <IconSymbol name="magnifyingglass" size={20} color="#00000044" style={{ marginRight: 8 }} />
             <TextInput
               placeholder="Recherche"
               placeholderTextColor="#00000044"
@@ -95,7 +96,6 @@ export default function BookScreen() {
               value={query}
               onChangeText={setQuery}
             />
-            <IconSymbol name="magnifyingglass" size={22} color="#000" />
           </View>
           
           <TouchableOpacity

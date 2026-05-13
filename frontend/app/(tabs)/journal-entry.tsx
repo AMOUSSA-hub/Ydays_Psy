@@ -169,7 +169,8 @@ export default function JournalEntryScreen() {
           <ScrollView 
             className="flex-1" 
             showsVerticalScrollIndicator={false} 
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+            keyboardShouldPersistTaps="handled"
           >
             <View className="mb-6">
               <ThemedText className="text-sm font-black text-white/60 uppercase tracking-widest mb-4 text-center">

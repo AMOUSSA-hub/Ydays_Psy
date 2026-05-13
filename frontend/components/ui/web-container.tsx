@@ -29,6 +29,7 @@ export function WebContainer({ children, maxWidth = 800, className = "" }: WebCo
 
 const styles = StyleSheet.create({
   outerContainer: {
+    flex: 1, // Added flex: 1 to ensure it can fill screen height
     width: '100%',
     alignItems: 'center',
   },
