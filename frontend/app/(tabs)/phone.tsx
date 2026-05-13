@@ -388,15 +388,37 @@ export default function PhoneScreen() {
         <WebContainer maxWidth={800} className="px-6">
           <View style={{ gap: 20 }}>
 
-            {/* SOS */}
+            {/* SOS / En cas d'urgence vitale */}
             <View style={{ borderRadius: 40, backgroundColor: '#DC2626', padding: 32 }}>
-              <Text style={{ fontSize: 24, fontWeight: '900', color: '#fff', textTransform: 'uppercase', marginBottom: 8 }}>Urgence</Text>
-              <Text style={{ color: 'rgba(255,255,255,0.8)', marginBottom: 20, fontSize: 15, lineHeight: 22 }}>
-                Le 3114 est disponible 24h/24, gratuit et anonyme.
+              <Text style={{ fontSize: 24, fontWeight: '900', color: '#fff', textTransform: 'uppercase', marginBottom: 8 }}>Urgences Vitales</Text>
+              <Text style={{ color: 'rgba(255,255,255,0.8)', marginBottom: 20, fontSize: 13, lineHeight: 20 }}>
+                En cas de danger immédiat pour votre vie ou celle d'autrui, contactez les secours.
               </Text>
-              <TouchableOpacity onPress={() => openPhone('3114')} style={{ backgroundColor: '#fff', borderRadius: 50, paddingVertical: 16 }}>
-                <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: '900', color: '#DC2626', textTransform: 'uppercase' }}>Appeler le 3114</Text>
-              </TouchableOpacity>
+              
+              <View style={{ gap: 12 }}>
+                <TouchableOpacity 
+                  onPress={() => openPhone('15')} 
+                  style={{ backgroundColor: '#fff', borderRadius: 25, paddingVertical: 14, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}
+                >
+                  <Text style={{ fontSize: 20, fontWeight: '900', color: '#DC2626' }}>15</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: '#DC2626', textTransform: 'uppercase' }}>SAMU</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  onPress={() => openPhone('3114')} 
+                  style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 25, paddingVertical: 14, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' }}
+                >
+                  <Text style={{ fontSize: 20, fontWeight: '900', color: '#fff' }}>3114</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '900', color: '#fff', textTransform: 'uppercase' }}>Prévention Suicide</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  onPress={() => openPhone('112')} 
+                  style={{ paddingVertical: 8, alignItems: 'center' }}
+                >
+                  <Text style={{ fontSize: 10, fontWeight: '900', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 1 }}>Autres : 112 (Europe), 114 (SMS)</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* Services */}

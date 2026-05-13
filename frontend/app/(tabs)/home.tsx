@@ -90,7 +90,7 @@ export default function HomeScreen() {
     const today = new Date();
     for (let i = 0; i < 7; i++) {
       const d = new Date(today);
-      d.setDate(today.getDate() - (6 - i));
+      d.setDate(today.getDate() + i);
       days.push(d);
     }
     const moodByDate = new Map(moods.map((m) => [m.logged_date, m.mood_score]));

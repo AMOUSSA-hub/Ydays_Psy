@@ -59,6 +59,7 @@ export async function saveJournalEntry(
       title: partial.title,
       body: partial.body,
       mood_score: partial.mood_score ?? null,
+      is_shared: partial.is_shared ?? false,
     };
     const { data, error } = await supabase
       .from('journal_entries')
@@ -75,6 +76,7 @@ export async function saveJournalEntry(
     title: partial.title,
     body: partial.body,
     mood_score: partial.mood_score ?? null,
+    is_shared: partial.is_shared ?? false,
     created_at: partial.created_at || new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });

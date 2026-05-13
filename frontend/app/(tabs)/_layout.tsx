@@ -1,6 +1,6 @@
 import { Tabs, Redirect } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, Platform, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { ActivityIndicator, Platform, View, TouchableOpacity, StyleSheet, Image, useWindowDimensions } from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -219,15 +219,18 @@ export default function TabLayout() {
   const isDark = colorScheme === 'dark';
   const navBg = isDark ? '#6B6588' : '#9896D4';
 
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
+
   return (
     <View className="flex-1">
       <Tabs
-        tabBar={(props) => (Platform.OS === 'web' ? <WebSidebar {...props} /> : <MobileTabBar {...props} />)}
+        tabBar={(props) => (isDesktop ? <WebSidebar {...props} /> : <MobileTabBar {...props} />)}
         screenOptions={{
           headerShown: false,
           sceneStyle: {
-            paddingLeft: Platform.OS === 'web' ? 100 : 0,
-            paddingBottom: Platform.OS === 'ios' || Platform.OS === 'android' ? 100 + insets.bottom : 0,
+            paddingLeft: isDesktop ? 100 : 0,
+            paddingBottom: !isDesktop ? (Platform.OS === 'ios' || Platform.OS === 'android' ? 100 + insets.bottom : 100) : 0,
             backgroundColor: navBg, // Ensure default scene background matches
           }
         }}

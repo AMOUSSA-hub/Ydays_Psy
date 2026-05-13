@@ -13,7 +13,7 @@ import {
 import { WebContainer } from '@/components/ui/web-container';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { useAuth } from '@/contexts/auth-context';
 import { getJournalEntry, saveJournalEntry, deleteJournalEntry } from '@/lib/repositories';
 import { cn } from '@/lib/utils';
@@ -35,6 +35,7 @@ export default function JournalEntryScreen() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [mood, setMood] = useState<number | null>(null);
+  const [isShared, setIsShared] = useState(false);
   const [loading, setLoading] = useState(!!entryId);
   const [saving, setSaving] = useState(false);
 
@@ -50,15 +51,26 @@ export default function JournalEntryScreen() {
         setTitle(row.title);
         setBody(row.body);
         setMood(row.mood_score);
+        setIsShared(row.is_shared);
       }
     } finally {
       setLoading(false);
     }
   }, [user, entryId]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!entryId) {
+        setTitle('');
+        setBody('');
+        setMood(null);
+        setIsShared(false);
+        setLoading(false);
+      } else {
+        void load();
+      }
+    }, [entryId, load])
+  );
 
   async function onSave() {
     if (!user || saving) return;
@@ -70,6 +82,7 @@ export default function JournalEntryScreen() {
         title: title.trim() || 'Sans titre',
         body: body.trim(),
         mood_score: mood,
+        is_shared: isShared,
       });
       router.replace('/book');
     } catch (e) {
@@ -81,21 +94,30 @@ export default function JournalEntryScreen() {
 
   async function onDelete() {
     if (!user || !entryId) return;
-    Alert.alert(
-      'Supprimer',
-      'Voulez-vous vraiment supprimer cette note ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        { 
-          text: 'Supprimer', 
-          style: 'destructive',
-          onPress: async () => {
-            await deleteJournalEntry(user.id, entryId);
-            router.replace('/book');
+
+    const performDelete = async () => {
+      await deleteJournalEntry(user.id, entryId);
+      router.replace('/book');
+    };
+
+    if (Platform.OS === 'web') {
+      if (confirm('Voulez-vous vraiment supprimer cette note ?')) {
+        void performDelete();
+      }
+    } else {
+      Alert.alert(
+        'Supprimer',
+        'Voulez-vous vraiment supprimer cette note ?',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          { 
+            text: 'Supprimer', 
+            style: 'destructive',
+            onPress: performDelete
           }
-        }
-      ]
-    );
+        ]
+      );
+    }
   }
 
   const moodOptions = [
@@ -120,34 +142,22 @@ export default function JournalEntryScreen() {
             marginBottom: 30,
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            height: 44, // Match settings button height
+            justifyContent: 'center', // Center title
+            height: 44,
+            position: 'relative',
           }}
         >
           <TouchableOpacity 
             onPress={() => router.replace('/book')}
             activeOpacity={0.7}
+            style={{ position: 'absolute', left: 0 }}
             className="w-11 h-11 items-center justify-center rounded-full shadow-sm bg-[#F2F2F7]"
           >
             <IconSymbol name="chevron.left" size={24} color="#000" />
           </TouchableOpacity>
 
-          <View className="flex-1 items-center">
-            <View className="rounded-full border border-black/10 px-16 py-2 bg-white shadow-sm">
-              <ThemedText className="text-2xl font-black text-black">Journal</ThemedText>
-            </View>
-          </View>
-
-          {/* Right Placeholder to balance the persistent settings button or show Trash */}
-          <View className="w-11 items-center justify-center">
-            {entryId && (
-              <TouchableOpacity 
-                onPress={onDelete} 
-                className="h-11 w-11 items-center justify-center rounded-full bg-white/20"
-              >
-                <IconSymbol name="trash.fill" size={20} color="#FF3B30" />
-              </TouchableOpacity>
-            )}
+          <View className="rounded-full border border-black/10 px-12 py-2 bg-white shadow-sm">
+            <ThemedText className="text-xl font-black text-black">Journal</ThemedText>
           </View>
         </View>
 
@@ -213,6 +223,42 @@ export default function JournalEntryScreen() {
               />
             </View>
 
+            {/* Shared with Doctor Selector */}
+            <View className="mb-8 px-2">
+              <ThemedText className="text-sm font-black text-white/70 uppercase tracking-widest mb-4">
+                Partager avec votre médecin ?
+              </ThemedText>
+              <View className="flex-row gap-4">
+                <TouchableOpacity 
+                   onPress={() => setIsShared(true)}
+                   activeOpacity={0.8}
+                   className={cn(
+                     "flex-1 h-14 rounded-2xl items-center justify-center flex-row gap-2 border-2",
+                     isShared ? "bg-white border-white shadow-md" : "bg-white/10 border-white/20"
+                   )}
+                >
+                  <View className={cn("w-5 h-5 rounded-full border-2 items-center justify-center", isShared ? "border-black" : "border-white/40")}>
+                    {isShared && <View className="w-2.5 h-2.5 rounded-full bg-black" />}
+                  </View>
+                  <ThemedText className={cn("font-black uppercase tracking-widest text-xs", isShared ? "text-black" : "text-white/40")}>Oui</ThemedText>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                   onPress={() => setIsShared(false)}
+                   activeOpacity={0.8}
+                   className={cn(
+                     "flex-1 h-14 rounded-2xl items-center justify-center flex-row gap-2 border-2",
+                     !isShared ? "bg-white border-white shadow-md" : "bg-white/10 border-white/20"
+                   )}
+                >
+                  <View className={cn("w-5 h-5 rounded-full border-2 items-center justify-center", !isShared ? "border-black" : "border-white/40")}>
+                    {!isShared && <View className="w-2.5 h-2.5 rounded-full bg-black" />}
+                  </View>
+                  <ThemedText className={cn("font-black uppercase tracking-widest text-xs", !isShared ? "text-black" : "text-white/40")}>Non</ThemedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+
             <TouchableOpacity 
               onPress={onSave} 
               disabled={saving}
@@ -223,6 +269,15 @@ export default function JournalEntryScreen() {
                 {saving ? 'Sauvegarde...' : 'Enregistrer'}
               </ThemedText>
             </TouchableOpacity>
+
+            {entryId && (
+              <TouchableOpacity 
+                onPress={onDelete}
+                className="mt-6 h-14 w-full rounded-[24px] border-2 border-white/20 items-center justify-center"
+              >
+                <ThemedText className="text-white/40 font-black uppercase tracking-widest text-xs">Supprimer cette note</ThemedText>
+              </TouchableOpacity>
+            )}
           </ScrollView>
         )}
       </WebContainer>

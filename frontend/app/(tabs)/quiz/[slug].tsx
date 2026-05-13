@@ -209,7 +209,6 @@ export default function QuizDetailScreen() {
           </View>
           <View className="w-11" />
         </View>
-
         <View className="mb-8 h-2 w-full bg-white/20 rounded-full overflow-hidden">
           <View 
             className="h-full bg-white rounded-full" 
