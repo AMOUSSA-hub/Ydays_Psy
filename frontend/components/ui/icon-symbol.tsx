@@ -19,6 +19,8 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'person.fill': 'person', // Added mapping for profile icon
+  'person.2.fill': 'group', // For pro: patients list
+  'doc.text.fill': 'description', // For pro: bilans / quiz results
   'gearshape.fill': 'settings', // Added mapping for settings icon
   'arrow.right': 'arrow-right-alt', // Added mapping for arrow icon
   'questionmark.circle.fill': 'help', // Added mapping for question mark icon

@@ -21,7 +21,7 @@ export const unstable_settings = {
 function RootNavigation() {
   const colorScheme = useResolvedColorScheme();
   const isDark = colorScheme === 'dark';
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const insets = useSafeAreaInsets();
 
   return (
@@ -29,9 +29,9 @@ function RootNavigation() {
       <View className="flex-1">
         <Stack screenOptions={{ headerShown: false }} />
         
-        {user && (
+        {user && role !== 'professional' && (
           <>
-            {/* Persistent Settings Button - Top Right */}
+            {/* Persistent Settings Button - Top Right (espace patient uniquement) */}
             <TouchableOpacity
               onPress={() => router.push('/settings')}
               activeOpacity={0.7}

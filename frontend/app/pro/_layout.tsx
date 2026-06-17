@@ -1,6 +1,13 @@
 import { Tabs, Redirect } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, Platform, View, TouchableOpacity, StyleSheet, Image, useWindowDimensions } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -8,47 +15,24 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
 import { useAppBackgroundClass } from '@/hooks/use-app-background';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
-function TabIcon({ name, color, size, routeName }: { name: string, color: string, size: number, routeName: string }) {
-  if (routeName === 'character') {
-    return (
-      <Image 
-        source={require('@/assets/images/figma/monster.png')} 
-        style={{ width: size + 10, height: size + 10, resizeMode: 'contain' }}
-      />
-    );
-  }
-  
-  const iconMap: Record<string, any> = {
-    'home': 'house.fill',
-    'book': 'book.closed.fill',
-    'agenda': 'checklist',
-    'phone': 'phone.fill',
-    'profile': 'person.fill',
-  };
+const ICON_MAP: Record<string, string> = {
+  patients: 'person.2.fill',
+  agenda: 'calendar',
+  profile: 'person.fill',
+};
 
-  return <IconSymbol size={size} name={iconMap[routeName] || name} color={color} />;
-}
+const ALLOWED = ['patients', 'agenda', 'profile'];
 
 function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
-  
+
   return (
-    <View 
-      style={[
-        styles.mobileContainer, 
-        { paddingBottom: insets.bottom + 16 }
-      ]}
-    >
-      <View style={[
-        styles.mobileInner,
-        { backgroundColor: '#FFFFFF' }
-      ]}>
+    <View style={[styles.mobileContainer, { paddingBottom: insets.bottom + 16 }]}>
+      <View style={styles.mobileInner}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
-          const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone', 'profile'];
-          if (!allowedRoutes.includes(route.name)) return null;
+          if (!ALLOWED.includes(route.name)) return null;
           if ((options as any).href === null) return null;
 
           const isFocused = state.index === index;
@@ -68,16 +52,12 @@ function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               key={route.key}
               onPress={onPress}
               activeOpacity={0.8}
-              style={[
-                styles.tabButton,
-                isFocused && styles.tabButtonActive
-              ]}
+              style={[styles.tabButton, isFocused && styles.tabButtonActive]}
             >
-              <TabIcon 
-                routeName={route.name}
-                name=""
-                color={isFocused ? '#000' : '#666'} 
-                size={24} 
+              <IconSymbol
+                size={24}
+                name={(ICON_MAP[route.name] || 'person.fill') as any}
+                color={isFocused ? '#000' : '#666'}
               />
             </TouchableOpacity>
           );
@@ -89,34 +69,24 @@ function MobileTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
 function WebSidebar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
-    <View style={[
-      styles.webSidebar,
-      { backgroundColor: '#F2F2F7' }
-    ]}>
+    <View style={styles.webSidebar}>
       <View style={styles.webSidebarInner}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
-          
-          const allowedRoutes = ['home', 'book', 'character', 'agenda', 'phone', 'profile'];
-          if (!allowedRoutes.includes(route.name)) return null;
+          if (!ALLOWED.includes(route.name)) return null;
           if ((options as any).href === null) return null;
 
           const isFocused = state.index === index;
-          const onPress = () => {
-            navigation.navigate(route.name);
-          };
-
           return (
             <TouchableOpacity
               key={route.key}
-              onPress={onPress}
+              onPress={() => navigation.navigate(route.name)}
               style={[styles.webItem, isFocused && styles.webItemActive]}
             >
-              <TabIcon 
-                routeName={route.name}
-                name=""
-                color={isFocused ? '#000' : '#666'} 
-                size={32} 
+              <IconSymbol
+                size={32}
+                name={(ICON_MAP[route.name] || 'person.fill') as any}
+                color={isFocused ? '#000' : '#666'}
               />
             </TouchableOpacity>
           );
@@ -138,10 +108,10 @@ const styles = StyleSheet.create({
   },
   mobileInner: {
     flexDirection: 'row',
-    backgroundColor: '#F2F2F7E6', // More opaque for better readability
+    backgroundColor: '#FFFFFF',
     borderRadius: 50,
     padding: 8,
-    gap: 8, // Reduced gap from 12
+    gap: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
@@ -149,8 +119,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   tabButton: {
-    width: 48, // Reduced from 60
-    height: 48, // Reduced from 60
+    width: 48,
+    height: 48,
     borderRadius: 24,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
@@ -200,12 +170,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function TabLayout() {
+export default function ProLayout() {
   const { user, initialized, role } = useAuth();
-  const colorScheme = useColorScheme();
   const screenBg = useAppBackgroundClass();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
 
   if (!initialized) {
     return (
@@ -216,13 +186,9 @@ export default function TabLayout() {
   }
 
   if (!user) return <Redirect href="/" />;
-  // Un professionnel ne doit pas atterrir dans l'espace patient.
-  if (role === 'professional') return <Redirect href="/pro/patients" />;
-
-  const isDark = colorScheme === 'dark';
-  const navBg = isDark ? '#6B6588' : '#9896D4';
-
-  const isDesktop = width >= 768;
+  // Si l'utilisateur n'a pas choisi l'espace pro, on le renvoie au bon endroit.
+  if (role && role !== 'professional') return <Redirect href="/(tabs)/home" />;
+  if (!role) return <Redirect href="/" />;
 
   return (
     <View className="flex-1">
@@ -232,24 +198,19 @@ export default function TabLayout() {
           headerShown: false,
           sceneStyle: {
             paddingLeft: isDesktop ? 100 : 0,
-            paddingBottom: !isDesktop ? (Platform.OS === 'ios' || Platform.OS === 'android' ? 100 + insets.bottom : 100) : 0,
-            backgroundColor: navBg, // Ensure default scene background matches
-          }
+            paddingBottom: !isDesktop
+              ? Platform.OS === 'ios' || Platform.OS === 'android'
+                ? 100 + insets.bottom
+                : 100
+              : 0,
+            backgroundColor: '#9896D4',
+          },
         }}
       >
-        <Tabs.Screen name="home" />
-        <Tabs.Screen name="book" />
-        <Tabs.Screen name="character" />
+        <Tabs.Screen name="patients" />
         <Tabs.Screen name="agenda" />
-        <Tabs.Screen name="phone" />
         <Tabs.Screen name="profile" />
-        <Tabs.Screen name="journal-entry" options={{ href: null }} />
-        <Tabs.Screen name="quiz/index" options={{ href: null }} />
-        <Tabs.Screen name="quiz/[slug]" options={{ href: null }} />
-        <Tabs.Screen name="activities/index" options={{ href: null }} />
-        <Tabs.Screen name="activities/[slug]" options={{ href: null }} />
-        <Tabs.Screen name="settings" options={{ href: null }} />
-        <Tabs.Screen name="privacy" options={{ href: null }} />
+        <Tabs.Screen name="patient/[id]" options={{ href: null }} />
       </Tabs>
     </View>
   );

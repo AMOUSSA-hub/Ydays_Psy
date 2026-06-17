@@ -6,163 +6,142 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Session } from '@supabase/supabase-js';
-import { HAS_SUPABASE } from '@/lib/env';
-import { supabase } from '@/lib/supabase';
-import { randomUuid } from '@/lib/uuid';
+import { api, setToken, clearToken, getToken } from '@/lib/api';
 
-const LOCAL_USER_KEY = 'ydays_auth_local_user_id';
-const LOCAL_ACCOUNTS_KEY = 'ydays_auth_local_accounts'; // For simple local "registration"
+export type AppRole = 'patient' | 'professional';
 
 export type AppUser = {
   id: string;
-  email?: string | null;
+  email: string;
+  role: AppRole;
+  display_name: string | null;
+  /** Conservé pour compatibilité (plus de mode anonyme avec un vrai backend). */
   isAnonymous: boolean;
 };
 
+type ServerUser = {
+  id: string;
+  email: string;
+  role: AppRole;
+  display_name: string | null;
+  invite_code?: string | null;
+};
+
+type AuthResult = { error: Error | null };
+
 type AuthContextValue = {
   user: AppUser | null;
-  session: Session | null;
+  role: AppRole | null;
   initialized: boolean;
-  signInAnonymous: () => Promise<void>;
-  signInWithPassword: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUpWithPassword: (email: string, password: string) => Promise<{ error: Error | null }>;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  register: (
+    email: string,
+    password: string,
+    role: AppRole,
+    displayName?: string
+  ) => Promise<AuthResult>;
   signOut: () => Promise<void>;
+  refresh: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-async function getOrCreateLocalUserId(): Promise<string> {
-  let id = await AsyncStorage.getItem(LOCAL_USER_KEY);
-  if (!id) {
-    id = randomUuid();
-    await AsyncStorage.setItem(LOCAL_USER_KEY, id);
-  }
-  return id;
+function toAppUser(u: ServerUser): AppUser {
+  return {
+    id: u.id,
+    email: u.email,
+    role: u.role,
+    display_name: u.display_name ?? null,
+    isAnonymous: false,
+  };
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [localUserId, setLocalUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    let unsub: { unsubscribe: () => void } | undefined;
-
     async function init() {
-      if (HAS_SUPABASE && supabase) {
-        const { data } = await supabase.auth.getSession();
-        setSession(data.session ?? null);
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, next) => {
-          setSession(next);
-        });
-        unsub = subscription;
-      } else {
-        const id = await AsyncStorage.getItem(LOCAL_USER_KEY);
-        setLocalUserId(id);
+      try {
+        const token = await getToken();
+        if (token) {
+          const { user: u } = await api<{ user: ServerUser }>('/auth/me');
+          setUser(toAppUser(u));
+        }
+      } catch {
+        // Jeton invalide ou serveur injoignable : on repart déconnecté.
+        await clearToken();
+        setUser(null);
+      } finally {
+        setInitialized(true);
       }
-      setInitialized(true);
     }
-
-    init();
-    return () => unsub?.unsubscribe();
+    void init();
   }, []);
 
-  const user: AppUser | null = useMemo(() => {
-    if (HAS_SUPABASE && session?.user) {
-      return {
-        id: session.user.id,
-        email: session.user.email,
-        isAnonymous: session.user.is_anonymous === true,
-      };
-    }
-    if (localUserId) {
-      return { id: localUserId, isAnonymous: true };
-    }
-    return null;
-  }, [session, localUserId]);
-
-  const signInAnonymous = useCallback(async () => {
-    if (HAS_SUPABASE && supabase) {
-      const { error } = await supabase.auth.signInAnonymously();
-      if (error) throw error;
-      return;
-    }
-    const id = await getOrCreateLocalUserId();
-    setLocalUserId(id);
-  }, []);
-
-  const signInWithPassword = useCallback(async (email: string, password: string) => {
-    if (HAS_SUPABASE && supabase) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      return { error: error ?? null };
-    }
-    
-    // Local fallback
-    const accountsRaw = await AsyncStorage.getItem(LOCAL_ACCOUNTS_KEY);
-    const accounts = accountsRaw ? JSON.parse(accountsRaw) : {};
-    if (accounts[email] && accounts[email].password === password) {
-      const id = accounts[email].id;
-      await AsyncStorage.setItem(LOCAL_USER_KEY, id);
-      setLocalUserId(id);
+  const login = useCallback(async (email: string, password: string): Promise<AuthResult> => {
+    try {
+      const { token, user: u } = await api<{ token: string; user: ServerUser }>('/auth/login', {
+        method: 'POST',
+        body: { email, password },
+        auth: false,
+      });
+      await setToken(token);
+      setUser(toAppUser(u));
       return { error: null };
+    } catch (e) {
+      return { error: e instanceof Error ? e : new Error('Connexion impossible.') };
     }
-    return { error: new Error('Email ou mot de passe incorrect.') };
   }, []);
 
-  const signUpWithPassword = useCallback(async (email: string, password: string) => {
-    if (HAS_SUPABASE && supabase) {
-      const { error } = await supabase.auth.signUp({ email, password });
-      return { error: error ?? null };
-    }
-
-    // Local fallback
-    const accountsRaw = await AsyncStorage.getItem(LOCAL_ACCOUNTS_KEY);
-    const accounts = accountsRaw ? JSON.parse(accountsRaw) : {};
-    if (accounts[email]) {
-      return { error: new Error('Ce compte existe déjà localement.') };
-    }
-    const newId = randomUuid();
-    accounts[email] = { id: newId, password };
-    await AsyncStorage.setItem(LOCAL_ACCOUNTS_KEY, JSON.stringify(accounts));
-    
-    // Automatically sign in
-    await AsyncStorage.setItem(LOCAL_USER_KEY, newId);
-    setLocalUserId(newId);
-    return { error: null };
-  }, []);
+  const register = useCallback(
+    async (
+      email: string,
+      password: string,
+      role: AppRole,
+      displayName?: string
+    ): Promise<AuthResult> => {
+      try {
+        const { token, user: u } = await api<{ token: string; user: ServerUser }>('/auth/register', {
+          method: 'POST',
+          body: { email, password, role, display_name: displayName ?? null },
+          auth: false,
+        });
+        await setToken(token);
+        setUser(toAppUser(u));
+        return { error: null };
+      } catch (e) {
+        return { error: e instanceof Error ? e : new Error('Inscription impossible.') };
+      }
+    },
+    []
+  );
 
   const signOut = useCallback(async () => {
-    if (HAS_SUPABASE && supabase) {
-      await supabase.auth.signOut();
-      setSession(null);
+    await clearToken();
+    setUser(null);
+  }, []);
+
+  const refresh = useCallback(async () => {
+    try {
+      const { user: u } = await api<{ user: ServerUser }>('/auth/me');
+      setUser(toAppUser(u));
+    } catch {
+      // ignore
     }
-    await AsyncStorage.removeItem(LOCAL_USER_KEY);
-    setLocalUserId(null);
   }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
-      session,
+      role: user?.role ?? null,
       initialized,
-      signInAnonymous,
-      signInWithPassword,
-      signUpWithPassword,
+      login,
+      register,
       signOut,
+      refresh,
     }),
-    [
-      user,
-      session,
-      initialized,
-      signInAnonymous,
-      signInWithPassword,
-      signUpWithPassword,
-      signOut,
-    ]
+    [user, initialized, login, register, signOut, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -173,4 +152,3 @@ export function useAuth() {
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 }
-
