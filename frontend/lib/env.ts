@@ -5,10 +5,6 @@ function getExtra(key: string): string | undefined {
   return extra?.[key];
 }
 
-/** URL de base de l'API backend (Node/Express). */
-export const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_URL ?? getExtra('apiUrl') ?? 'http://localhost:4000';
-
 /** Supabase project URL */
 export const SUPABASE_URL =
   process.env.EXPO_PUBLIC_SUPABASE_URL ?? getExtra('supabaseUrl') ?? '';
