@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   Platform,
   StatusBar,
   ActivityIndicator,
-  KeyboardAvoidingView,
+  Keyboard,
   ScrollView,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -32,6 +32,20 @@ export default function AuthScreen() {
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [kbHeight, setKbHeight] = useState(0);
+
+  // Mesure la hauteur réelle du clavier (fiable partout, y compris Expo Go
+  // et avec edge-to-edge où KeyboardAvoidingView est défaillant sur Android).
+  useEffect(() => {
+    const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const show = Keyboard.addListener(showEvt, (e) => setKbHeight(e.endCoordinates.height));
+    const hide = Keyboard.addListener(hideEvt, () => setKbHeight(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
 
   async function submit() {
     if (loading) return;
@@ -62,10 +76,7 @@ export default function AuthScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-[#9896D4]"
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <View className="flex-1 bg-[#9896D4]">
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -88,7 +99,12 @@ export default function AuthScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingBottom: kbHeight + 32 }}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        showsVerticalScrollIndicator={false}
+      >
         <WebContainer maxWidth={460} className="w-full items-center px-6">
           {/* Badge espace */}
           <View
@@ -178,6 +194,6 @@ export default function AuthScreen() {
           </View>
         </WebContainer>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }

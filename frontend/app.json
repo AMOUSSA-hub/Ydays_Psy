@@ -15,6 +15,7 @@
     },
     "android": {
       "package": "com.ochitsu.app",
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE"
       },
