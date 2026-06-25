@@ -22,7 +22,7 @@ export async function ensureNotificationPermissions(): Promise<boolean> {
   return req.status === 'granted';
 }
 
-/** Programme une notification dans le futur (délai mini 60 s). */
+/** Programme une notification à l'heure exacte indiquée (trigger calendaire). */
 export async function scheduleReminderNotification(
   title: string,
   body: string | undefined,
@@ -31,8 +31,12 @@ export async function scheduleReminderNotification(
   if (Platform.OS === 'web') return null;
   const ok = await ensureNotificationPermissions();
   if (!ok) return null;
-  const ms = triggerDate.getTime() - Date.now();
-  const seconds = Math.max(60, Math.ceil(ms / 1000));
+
+  // Déclenchement à l'heure pile (pas de plancher de 60 s). Si la date est
+  // déjà passée, on déclenche quasi immédiatement plutôt que de la décaler.
+  const when =
+    triggerDate.getTime() > Date.now() ? triggerDate : new Date(Date.now() + 2000);
+
   const id = await Notifications.scheduleNotificationAsync({
     content: {
       title,
@@ -40,9 +44,8 @@ export async function scheduleReminderNotification(
       sound: true,
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds,
-      repeats: false,
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: when,
     },
   });
   return id;

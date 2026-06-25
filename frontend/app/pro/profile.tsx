@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import * as Clipboard from 'expo-clipboard';
 import { WebContainer } from '@/components/ui/web-container';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
@@ -37,6 +38,14 @@ export default function ProProfileScreen() {
   const [patientCount, setPatientCount] = useState(0);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const copyCode = useCallback(async () => {
+    if (!inviteCode) return;
+    await Clipboard.setStringAsync(inviteCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [inviteCode]);
 
   const proName = user?.display_name || (user?.email ? user.email.split('@')[0] : 'Praticien');
 
@@ -135,11 +144,31 @@ export default function ProProfileScreen() {
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <View style={{ backgroundColor: '#fff', borderRadius: 18, paddingHorizontal: 28, paddingVertical: 16 }}>
-                <Text style={{ fontSize: 32, fontWeight: '900', letterSpacing: 10, color: '#000' }}>
-                  {inviteCode ?? '—'}
-                </Text>
-              </View>
+              <>
+                <TouchableOpacity
+                  onPress={copyCode}
+                  disabled={!inviteCode}
+                  activeOpacity={0.7}
+                  style={{ backgroundColor: '#fff', borderRadius: 18, paddingHorizontal: 28, paddingVertical: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}
+                >
+                  <Text style={{ fontSize: 32, fontWeight: '900', letterSpacing: 10, color: '#000' }}>
+                    {inviteCode ?? '—'}
+                  </Text>
+                  {inviteCode && <Text style={{ fontSize: 22 }}>📋</Text>}
+                </TouchableOpacity>
+
+                {inviteCode && (
+                  <TouchableOpacity
+                    onPress={copyCode}
+                    activeOpacity={0.8}
+                    style={{ marginTop: 14, backgroundColor: copied ? '#22C55E' : 'rgba(255,255,255,0.15)', borderRadius: 50, paddingHorizontal: 24, paddingVertical: 10, borderWidth: 1, borderColor: copied ? '#22C55E' : 'rgba(255,255,255,0.25)' }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: '900', color: '#fff', textTransform: 'uppercase', letterSpacing: 2 }}>
+                      {copied ? '✓ Copié !' : 'Copier le code'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </>
             )}
           </View>
 
