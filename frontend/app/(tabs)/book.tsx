@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { listJournalEntries } from '@/lib/repositories';
 import type { JournalEntryRow } from '@/types/database';
+import { Image } from 'expo-image';
 
 const MONTHS_SHORT = [
   'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
@@ -144,13 +145,22 @@ export default function BookScreen() {
                 </View>
 
                 {/* Right Title Pill */}
-                <View className="flex-1 h-20 bg-white rounded-[32px] ml-3 mr-1 justify-center px-8 border-l-8 border-black">
-                  <ThemedText className="text-xl font-black text-black" numberOfLines={1}>
-                    {item.title || 'Sans titre'}
-                  </ThemedText>
-                  <ThemedText className="text-xs font-bold text-black/30 uppercase tracking-widest">
-                    {item.mood_score ? ['Triste', 'Bof', 'Neutre', 'Bien', 'Super'][item.mood_score - 1] : 'Pensée'}
-                  </ThemedText>
+                <View className="flex-1 h-20 bg-white rounded-[32px] ml-3 mr-1 justify-between items-center px-8 border-l-8 border-black flex-row">
+                  <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <ThemedText className="text-xl font-black text-black" numberOfLines={1}>
+                      {item.title || 'Sans titre'}
+                    </ThemedText>
+                    <ThemedText className="text-xs font-bold text-black/30 uppercase tracking-widest">
+                      {item.mood_score ? ['Triste', 'Bof', 'Neutre', 'Bien', 'Super'][item.mood_score - 1] : 'Pensée'}
+                    </ThemedText>
+                  </View>
+                  {item.image_data && (
+                    <Image
+                      source={{ uri: item.image_data }}
+                      style={{ width: 44, height: 44, borderRadius: 12, marginLeft: 8 }}
+                      contentFit="cover"
+                    />
+                  )}
                 </View>
               </TouchableOpacity>
             );

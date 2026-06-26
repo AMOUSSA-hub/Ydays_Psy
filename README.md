@@ -1,132 +1,64 @@
-# Ochitsu 🧘
+# Ochitsu 🩺✨
 
-> **Ochitsu** (落ち着く — « se calmer, s'apaiser » en japonais) est une application
-> mobile et web d'accompagnement en **santé mentale**, qui relie un patient à son
-> professionnel de santé (psychologue, psychiatre).
+Ochitsu est un compagnon de santé mentale intelligent et moderne, conçu pour aider les patients à suivre leur humeur et à partager de manière sécurisée leur journal quotidien avec leur professionnel de santé. Le projet se compose d'une application mobile (iOS & Android) et d'un portail web.
 
+## 🚀 Fonctionnalités implémentées
 
----
+### 1. 📷 Prise de photos & Pièces jointes
+* **Mobile (Natif)** : Intégration de l'appareil photo natif du téléphone (`expo-image-picker`) pour une capture matérielle robuste et stable, et sélection dans la galerie photos.
+* **Web** : Ouverture d'une caméra sur mesure avec flux vidéo webcam en direct (HTML5 `<video>`), capture d'image via canvas, et arrêt automatique des flux lors de la fermeture pour préserver l'autonomie.
 
-## 🎯 Le concept
+### 2. 🎙️ Dictée Vocale (Speech-to-Text)
+* **Web** : Intégration de l'API native `SpeechRecognition` / `webkitSpeechRecognition` pour une dictée fluide à voix haute directement dans le champ texte.
+* **Mobile** : Recommandation d'utilisation du micro natif intégré aux claviers virtuels d'iOS et Android pour une compatibilité à 100 % sous l'environnement Expo Go.
 
-Beaucoup de personnes en souffrance peinent à verbaliser leur état entre deux
-rendez-vous, et les praticiens manquent de données objectives sur l'intervalle.
+### 3. 🔍 Liaison Médecin-Patient par QR Code
+* **Espace Professionnel** : Génération en direct d'un QR code unique lié au code d'invitation du praticien (géré par API de rendu dynamique).
+* **Espace Patient (Mobile & Web)** : Module de scan de QR code intégré. Sur mobile, il utilise `CameraView` d'Expo Camera. Sur Web, il décode le flux de la webcam en temps réel via la bibliothèque `jsQR`.
+* **Liaison instantanée** : Dès que le QR Code est scanné, l'application associe automatiquement le médecin au profil du patient dans la base de données Supabase.
 
-Ochitsu propose un **espace bienveillant et confidentiel** où le patient documente
-son quotidien (humeur, journal, auto-évaluations, exercices), et peut — **sur
-consentement explicite et de façon granulaire** — partager certaines de ces données
-avec son professionnel de santé attitré, pour enrichir la matière à discussion lors
-des consultations.
-
-Deux espaces, un seul produit :
-
-- **Espace Patient** : suivi quotidien et bien-être.
-- **Espace Professionnel** : suivi des patients reliés et de leurs données partagées.
+### 4. 🔕 Compatibilité Expo Go (SDK 54)
+* **Bypass de crash** : Les imports de push-notifications (`expo-notifications`) sont chargés dynamiquement afin d'éviter les crashs de démarrage typiques d'Expo Go sur Android (depuis la suppression de l'API de push d'Expo Go par Expo au SDK 53).
 
 ---
 
-## ✨ Fonctionnalités
+## 🛠️ Stack Technique
 
-### Côté patient
-- 📊 **Suivi d'humeur** quotidien (échelle 1–5) avec graphique sur 7 jours
-- 📓 **Journal intime** avec partage **par note** (privé par défaut)
-- 🧠 **Bilans / quiz** validés : PHQ-9 (dépression), GAD-7 (anxiété), sommeil
-- 🌬️ **Exercices** de respiration, méditation, conseils
-- 🗓️ **Rituels & rappels** planifiables (notifications locales)
-- 🚨 **Urgences** : SAMU (15), 3114, 112… appelables en un geste + géolocalisation des thérapeutes
-- 🔗 **Liaison à son médecin** via un code d'invitation
-
-### Côté professionnel
-- 👥 **Liste des patients** reliés (humeur récente, tendance, alertes « à surveiller »)
-- 📈 **Fiche patient** : graphique d'humeur, bilans, **notes partagées uniquement**
-- 📅 **Agenda** des rendez-vous à venir
-- 🪪 **Code d'invitation** à communiquer aux patients
+* **Framework** : React Native & Expo (SDK 54), Expo Router v3
+* **Web** : React Native Web
+* **Style** : Tailwind CSS via NativeWind v4
+* **Backend & BDD** : Supabase (PostgreSQL) avec Row Level Security (RLS) active
+* **Décodage QR** : `jsQR` (Web)
 
 ---
 
-## 🏗️ Architecture
+## 💻 Démarrage rapide
 
-```
-┌──────────────────────────────┐     supabase-js (HTTPS)     ┌──────────────────────────┐
-│  Application (React Native)  │ ─────────────────────────▶  │  Supabase                 │
-│  Expo Router · iOS/Android/Web│   JWT (session persistée)  │  • Auth (email/password)  │
-└──────────────────────────────┘ ◀─────────────────────────  │  • PostgreSQL + RLS        │
-                                                              └──────────────────────────┘
-```
-
-Le contrôle d'accès (qui voit quoi) est appliqué **en base via les politiques RLS** :
-un professionnel ne lit que les données `is_shared` des patients qui l'ont relié.
-
-### Stack technique
-
-| Couche | Technologie |
-|---|---|
-| Frontend | React Native + **Expo Router** (iOS / Android / Web) |
-| Styling | NativeWind (Tailwind CSS) · TypeScript |
-| Backend | **Supabase** — Auth + PostgreSQL + Row Level Security |
-| Natif | Géolocalisation (`expo-location`), Notifications (`expo-notifications`), Presse-papier (`expo-clipboard`) |
-
----
-
-## 📁 Structure du dépôt
-
-```
-ydays-psy-app/
-├── frontend/                  # Application Expo / React Native
-│   ├── app/                   # Écrans (Expo Router)
-│   │   ├── index.tsx          #   accueil — choix d'espace
-│   │   ├── auth.tsx           #   connexion / inscription
-│   │   ├── (tabs)/            #   espace patient (home, book, agenda, phone, profile…)
-│   │   └── pro/               #   espace professionnel (patients, patient/[id], agenda, profile)
-│   ├── lib/                   # supabase.ts, repositories.ts, pro-data.ts, notifications.ts…
-│   └── contexts/              # auth-context, theme-preference-context
-├── supabase/
-│   └── migrations/
-│       └── 0002_ochitsu_rls.sql   # schéma + RLS + trigger + données de référence
-├── docs/
-│   ├── SUPABASE_SETUP.md      # procédure de configuration Supabase
-│   └── SPECIFICATIONS.md      # cahier des spécifications complet
-└── db-schema.png             # diagramme entité-association
-```
-
----
-
-## 🚀 Démarrage rapide
-
-### 1. Backend Supabase
-1. Créer un projet sur [supabase.com](https://supabase.com).
-2. Dans **SQL Editor**, exécuter [`supabase/migrations/0002_ochitsu_rls.sql`](supabase/migrations/0002_ochitsu_rls.sql).
-3. Dans **Authentication → Providers → Email**, désactiver **« Confirm email »**.
-
-> Procédure détaillée : [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md)
-
-### 2. Application
+### 1. Cloner le dépôt et installer les dépendances
 ```bash
 cd frontend
-cp .env.example .env        # renseigner EXPO_PUBLIC_SUPABASE_URL et _ANON_KEY
 npm install
-npm start                   # « w » pour le web, ou scanner le QR (Expo Go)
 ```
 
-### 3. Build APK (Android)
-```bash
-cd frontend
-eas build -p android --profile preview --clear-cache
+### 2. Configurer les variables d'environnement
+Créez un fichier `.env` dans le dossier `frontend` :
+```env
+EXPO_PUBLIC_SUPABASE_URL=https://votre-projet.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=votre-cle-anonyme
 ```
-Les variables Supabase sont fournies au build via `eas.json` (profil `preview`).
+
+### 3. Lancer l'application
+* **Mode Web** :
+  ```bash
+  npm run web
+  ```
+* **Mode Mobile (Expo Go)** :
+  ```bash
+  npx expo start
+  ```
+  Scannez ensuite le QR code affiché dans la console avec l'application **Expo Go** sur votre appareil mobile.
 
 ---
 
-## 🔐 Sécurité & confidentialité
-
-Les données traitées relèvent de la **santé mentale** (données sensibles, RGPD art. 9) :
-
-- Authentification gérée par **Supabase Auth** (mots de passe hachés, jamais exposés).
-- **RLS** sur les 10 tables : chacun n'accède qu'à ses données ; le pro lit uniquement
-  les données **partagées** de ses patients **reliés**.
-- Partage **explicite** (liaison par code + `is_shared`) et **révocable** à tout moment.
-- La clé `anon` embarquée dans l'app est **publique par conception** — la sécurité
-  repose sur la RLS, pas sur le secret de la clé.
-
-> Pour une mise en production réelle en France : hébergement **HDS** recommandé.
-
+## 🔒 Sécurité & Base de données
+Les schémas SQL de la base de données et les configurations des politiques de sécurité (RLS) se trouvent dans le dossier [supabase/migrations](file:///c:/Users/yoann/Desktop/ynov/B3%2025-26/ydays%202/DevMobile/supabase/migrations). Pour la configuration initiale de Supabase, veuillez vous référer au guide [docs/SUPABASE_SETUP.md](file:///c:/Users/yoann/Desktop/ynov/B3%2025-26/ydays%202/DevMobile/docs/SUPABASE_SETUP.md).

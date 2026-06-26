@@ -1,21 +1,33 @@
 /**
  * Rappels locaux (mobile). Sur web : pas de notifications natives ; utiliser les rappels in-app (liste agenda).
  */
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+// On Android Expo Go, expo-notifications crashes at import time due to DevicePushTokenAutoRegistration.
+// We must avoid importing or requiring it.
+const isAndroidExpoGo = Platform.OS === 'android' && Constants.appOwnership === 'expo';
+
+let Notifications: any = null;
+if (Platform.OS !== 'web' && !isAndroidExpoGo) {
+  try {
+    Notifications = require('expo-notifications');
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  } catch (e) {
+    console.warn("Failed to load expo-notifications:", e);
+  }
+}
 
 export async function ensureNotificationPermissions(): Promise<boolean> {
-  if (Platform.OS === 'web') return false;
+  if (Platform.OS === 'web' || !Notifications) return false;
   const perm = await Notifications.getPermissionsAsync();
   if (perm.status === 'granted') return true;
   const req = await Notifications.requestPermissionsAsync();
@@ -28,7 +40,7 @@ export async function scheduleReminderNotification(
   body: string | undefined,
   triggerDate: Date
 ): Promise<string | null> {
-  if (Platform.OS === 'web') return null;
+  if (Platform.OS === 'web' || !Notifications) return null;
   const ok = await ensureNotificationPermissions();
   if (!ok) return null;
 
@@ -52,7 +64,7 @@ export async function scheduleReminderNotification(
 }
 
 export async function cancelScheduledNotification(notificationId: string | null | undefined) {
-  if (!notificationId || Platform.OS === 'web') return;
+  if (!notificationId || Platform.OS === 'web' || !Notifications) return;
   try {
     await Notifications.cancelScheduledNotificationAsync(notificationId);
   } catch {

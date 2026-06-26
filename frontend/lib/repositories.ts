@@ -59,6 +59,7 @@ export async function saveJournalEntry(
     title: partial.title,
     body: partial.body,
     mood_score: partial.mood_score ?? null,
+    image_data: partial.image_data ?? null,
     is_shared: partial.is_shared ?? false,
   };
   if (partial.id) {
