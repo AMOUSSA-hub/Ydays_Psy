@@ -12,7 +12,7 @@ import { HAS_SUPABASE, SUPABASE_ANON_KEY, SUPABASE_URL } from '@/lib/env';
  * construction. On renvoie alors `null` : la page pré-rendue est une simple
  * coquille HTML, et le vrai client est créé côté navigateur lors de l'hydratation.
  */
-const canUseSupabase = HAS_SUPABASE && typeof WebSocket !== 'undefined';
+const canUseSupabase = HAS_SUPABASE && typeof window !== 'undefined';
 
 export const supabase = canUseSupabase
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {

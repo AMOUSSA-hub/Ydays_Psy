@@ -16,6 +16,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { getPatientDetail, MOOD_CONFIG, type PatientDetail } from '@/lib/pro-data';
 import { listQuestionnaires } from '@/lib/repositories';
 import type { MoodLogRow } from '@/types/database';
+import { Image } from 'expo-image';
 
 const DAYS_SHORT = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
@@ -262,7 +263,14 @@ export default function PatientDetailScreen() {
                         <Text style={{ fontSize: 10, color: '#bbb', fontWeight: '700', textTransform: 'uppercase' }}>{formatDate(j.created_at)}</Text>
                       </View>
                     </View>
-                    <Text style={{ fontSize: 14, color: '#444', lineHeight: 21 }}>{j.body}</Text>
+                    <Text style={{ fontSize: 14, color: '#444', lineHeight: 21, marginBottom: j.image_data ? 12 : 0 }}>{j.body}</Text>
+                    {j.image_data && (
+                      <Image
+                        source={{ uri: j.image_data }}
+                        style={{ width: '100%', height: 160, borderRadius: 18 }}
+                        contentFit="cover"
+                      />
+                    )}
                   </View>
                 );
               })

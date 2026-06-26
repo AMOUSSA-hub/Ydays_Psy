@@ -17,6 +17,7 @@ export interface JournalEntryRow {
   title: string;
   body: string;
   mood_score: number | null;
+  image_data?: string | null;
   is_shared: boolean;
   created_at: string;
   updated_at: string;

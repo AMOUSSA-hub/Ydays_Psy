@@ -75,16 +75,6 @@ drop trigger if exists profiles_updated_at on public.profiles;
 create trigger profiles_updated_at before update on public.profiles
   for each row execute function public.set_updated_at();
 
--- Vérifie que l'utilisateur courant est un professionnel relié à `patient`.
--- security definer pour contourner la RLS de la table de liens (évite la récursion).
-create or replace function public.is_linked_professional(patient uuid)
-returns boolean as $$
-  select exists (
-    select 1 from public.patient_professional_links l
-    where l.patient_id = patient and l.professional_id = auth.uid()
-  );
-$$ language sql stable security definer set search_path = public;
-
 -- ─── Liaison patient ↔ professionnel ─────────────────────────────────────────
 create table if not exists public.patient_professional_links (
   id              uuid primary key default gen_random_uuid(),
@@ -96,6 +86,16 @@ create table if not exists public.patient_professional_links (
 create index if not exists idx_links_pro on public.patient_professional_links (professional_id);
 create index if not exists idx_links_pat on public.patient_professional_links (patient_id);
 
+-- Vérifie que l'utilisateur courant est un professionnel relié à `patient`.
+-- security definer pour contourner la RLS de la table de liens (évite la récursion).
+create or replace function public.is_linked_professional(patient uuid)
+returns boolean as $$
+  select exists (
+    select 1 from public.patient_professional_links l
+    where l.patient_id = patient and l.professional_id = auth.uid()
+  );
+$$ language sql stable security definer set search_path = public;
+
 -- ─── Journal ─────────────────────────────────────────────────────────────────
 create table if not exists public.journal_entries (
   id         uuid primary key default gen_random_uuid(),
@@ -103,6 +103,7 @@ create table if not exists public.journal_entries (
   title      text not null default '',
   body       text not null default '',
   mood_score int check (mood_score between 1 and 5),
+  image_data text,
   is_shared  boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

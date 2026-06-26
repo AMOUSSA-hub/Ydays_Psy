@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Platform, StyleSheet } from 'react-native';
+import { View, Platform, StyleSheet, ViewStyle } from 'react-native';
 
 interface WebContainerProps {
   children: React.ReactNode;
   maxWidth?: number;
   className?: string;
+  style?: ViewStyle;
 }
 
-export function WebContainer({ children, maxWidth = 800, className = "" }: WebContainerProps) {
+export function WebContainer({ children, maxWidth = 800, className = "", style }: WebContainerProps) {
   if (Platform.OS !== 'web') {
-    return <View className={`w-full ${className}`}>{children}</View>;
+    return <View style={[{ flex: 1 }, style]} className={`w-full ${className}`}>{children}</View>;
   }
 
   return (
@@ -18,7 +19,8 @@ export function WebContainer({ children, maxWidth = 800, className = "" }: WebCo
         className={className}
         style={[
           styles.innerContainer, 
-          { maxWidth }
+          { maxWidth },
+          style
         ]}
       >
         {children}

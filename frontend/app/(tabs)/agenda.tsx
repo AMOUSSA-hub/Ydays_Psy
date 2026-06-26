@@ -29,17 +29,17 @@ const DAYS_SHORT = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 const DURATIONS = [5, 10, 15, 30, 60];
 
 const RITUALS = [
-  { id: 'zen',   title: 'Rituel Zen',   emoji: '🧘', body: 'Moment de respiration profonde.' },
-  { id: 'nuit',  title: 'Rituel Nuit',  emoji: '🌙', body: 'Gratitude et repos.' },
+  { id: 'zen', title: 'Rituel Zen', emoji: '🧘', body: 'Moment de respiration profonde.' },
+  { id: 'nuit', title: 'Rituel Nuit', emoji: '🌙', body: 'Gratitude et repos.' },
   { id: 'matin', title: 'Rituel Matin', emoji: '☀️', body: 'Eveil et energie.' },
 ];
 
 const MOOD_CONFIG = [
   { emoji: '😢', label: 'Difficile', color: '#FECACA', fill: '#EF4444' },
-  { emoji: '🙁', label: 'Pas top',   color: '#FED7AA', fill: '#F97316' },
-  { emoji: '😐', label: 'Neutre',    color: '#FEF08A', fill: '#EAB308' },
-  { emoji: '🙂', label: 'Bien',      color: '#BBF7D0', fill: '#22C55E' },
-  { emoji: '😊', label: 'Super !',   color: '#BAE6FD', fill: '#06B6D4' },
+  { emoji: '🙁', label: 'Pas top', color: '#FED7AA', fill: '#F97316' },
+  { emoji: '😐', label: 'Neutre', color: '#FEF08A', fill: '#EAB308' },
+  { emoji: '🙂', label: 'Bien', color: '#BBF7D0', fill: '#22C55E' },
+  { emoji: '😊', label: 'Super !', color: '#BAE6FD', fill: '#06B6D4' },
 ];
 
 // ─── Mood Chart ───────────────────────────────────────────────────────────────
@@ -217,9 +217,9 @@ export default function AgendaScreen() {
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
-      <View 
-        style={{ 
-          marginTop: isWeb ? 24 : insets.top + 16, 
+      <View
+        style={{
+          marginTop: isWeb ? 24 : insets.top + 16,
           marginBottom: 16,
           flexDirection: 'row',
           alignItems: 'center',
