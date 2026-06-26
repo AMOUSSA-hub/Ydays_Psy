@@ -108,6 +108,8 @@ create table if not exists public.journal_entries (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+-- Ajoute image_data même si la table préexiste (CREATE TABLE IF NOT EXISTS ne la modifie pas).
+alter table public.journal_entries add column if not exists image_data text;
 create index if not exists idx_journal_user on public.journal_entries (user_id);
 drop trigger if exists journal_updated_at on public.journal_entries;
 create trigger journal_updated_at before update on public.journal_entries
